@@ -1,0 +1,7 @@
+.git
+instance
+__pycache__
+*.pyc
+_preview
+G
+echo ok && ls

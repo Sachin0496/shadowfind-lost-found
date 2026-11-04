@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Register - ShadowFind{% endblock %}
+{% block content %}
+<div class="auth">
+  <div class="card"><div class="card-body">
+    <h1>Create an account</h1>
+    <p class="sub">Use your college e-mail address.</p>
+    <form method="post">
+      <div class="field">
+        <label for="name">Full name</label>
+        <input id="name" name="name" type="text" required value="{{ form.get('name','') }}">
+      </div>
+      <div class="field">
+        <label for="email">College email</label>
+        <input id="email" name="email" type="email" required value="{{ form.get('email','') }}"
+               placeholder="you@college.edu">
+      </div>
+      <div class="grid2">
+        <div class="field">
+          <label for="department">Department</label>
+          <select id="department" name="department" required>
+            {% for d in departments %}
+            <option value="{{ d }}" {{ 'selected' if form.get('department')==d }}>{{ d }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input id="password" name="password" type="password" required minlength="6"
+                 autocomplete="new-password">
+          <div class="hint">At least 6 characters.</div>
+        </div>
+      </div>
+      <button class="btn wide" type="submit">Create account</button>
+    </form>
+    <div class="foot">Already registered? <a href="{{ url_for('login') }}">Sign in</a></div>
+  </div></div>
+</div>
+{% endblock %}

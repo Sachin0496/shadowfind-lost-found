@@ -1,4 +1,6 @@
-# Only needed to regenerate the figures and the PDF.
-# The committed ShadowFind_Report.pdf needs no dependencies at all.
+# --- to run the web app ---
+-r app/requirements.txt
+
+# --- to regenerate the report figures and PDF ---
 matplotlib>=3.7
 Pillow>=10.0

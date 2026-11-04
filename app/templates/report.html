@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}Report an item - ShadowFind{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Report an item</h1>
+  <p>The photograph is used to extract the item's cast shadow and store its shape descriptor.</p>
+</div>
+
+<form method="post" enctype="multipart/form-data">
+<div class="card">
+  <div class="card-head"><h2>Item details</h2></div>
+  <div class="card-body">
+    <div class="field">
+      <label>What happened?</label>
+      <div class="radio-row">
+        <label id="lab-lost"><input type="radio" name="type" value="lost" required
+               {{ 'checked' if form.get('type','lost')=='lost' }}> I have <strong>lost</strong> this item</label>
+        <label id="lab-found"><input type="radio" name="type" value="found" required
+               {{ 'checked' if form.get('type')=='found' }}> I have <strong>found</strong> this item</label>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="field">
+        <label for="title">Item title</label>
+        <input id="title" name="title" type="text" required maxlength="80"
+               placeholder="e.g. Blue Nike backpack" value="{{ form.get('title','') }}">
+      </div>
+      <div class="field">
+        <label for="category">Category</label>
+        <select id="category" name="category" required>
+          {% for c in categories %}
+          <option value="{{ c }}" {{ 'selected' if form.get('category')==c }}>{{ c }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="field">
+        <label for="place">Place</label>
+        <input id="place" name="place" type="text" maxlength="80"
+               placeholder="e.g. Canteen, Central Library" value="{{ form.get('place','') }}">
+      </div>
+      <div class="field">
+        <label for="seen_on">Date</label>
+        <input id="seen_on" name="seen_on" type="date" value="{{ form.get('seen_on','') }}">
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="description">Short description</label>
+      <textarea id="description" name="description" maxlength="400"
+                placeholder="Colour, markings, anything that helps confirm ownership.">{{ form.get('description','') }}</textarea>
+    </div>
+
+    <div class="field" style="margin-bottom:0">
+      <label for="photo">Photograph of the item</label>
+      <input id="photo" name="photo" type="file" accept="image/*" required>
+      <div class="hint">JPG or PNG, up to 6 MB. Photograph the item so that its cast shadow is visible.</div>
+    </div>
+  </div>
+</div>
+<button class="btn" type="submit">Submit report</button>
+<a class="btn ghost" href="{{ url_for('dashboard') }}">Cancel</a>
+</form>
+
+<script>
+  const paint = () => {
+    for (const t of ['lost','found']) {
+      const r = document.querySelector(`input[value="${t}"]`);
+      document.getElementById('lab-'+t).classList.toggle('on', r.checked);
+    }
+  };
+  document.querySelectorAll('input[name=type]').forEach(r => r.addEventListener('change', paint));
+  paint();
+</script>
+{% endblock %}

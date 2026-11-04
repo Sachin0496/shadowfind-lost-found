@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}ShadowFind - lost and found, matched by shadow{% endblock %}
+{% block content %}
+<div class="hero">
+  <div>
+    <h1>Find your lost item by the shape of its shadow.</h1>
+    <p>Photograph a lost or found item once. ShadowFind extracts its cast shadow,
+       describes the outline in 64 numbers, and ranks the reports that match it &mdash;
+       so a blue bag is compared with another blue bag by shape, not by two people's
+       descriptions of it.</p>
+    <div class="cta">
+      <a class="btn" href="{{ url_for('report') if current_student else url_for('register') }}">Report an item</a>
+      <a class="btn light" href="{{ url_for('browse') }}">Browse reports</a>
+    </div>
+  </div>
+  <div class="hero-art">
+    <svg viewBox="0 0 260 190" fill="none">
+      <rect x="20" y="20" width="150" height="110" rx="10" fill="#ffffff18" stroke="#ffffff55"/>
+      <circle cx="78" cy="60" r="24" fill="#fff" opacity=".92"/>
+      <rect x="56" y="72" width="44" height="34" rx="4" fill="#fff" opacity=".92"/>
+      <ellipse cx="172" cy="150" rx="66" ry="16" fill="#000" opacity=".22"/>
+      <path d="M78 118 L150 150 L188 146 L110 108 Z" fill="#7fa8cc" opacity=".65"/>
+      <circle cx="78" cy="60" r="24" stroke="#fff" stroke-width="2" fill="none" opacity=".8"/>
+    </svg>
+  </div>
+</div>
+
+<div class="stats">
+  <div class="stat"><div class="n">{{ stats.lost }}</div><div class="k">Lost items reported</div></div>
+  <div class="stat"><div class="n">{{ stats.found }}</div><div class="k">Found items reported</div></div>
+  <div class="stat"><div class="n">{{ stats.returned }}</div><div class="k">Confirmed returns</div></div>
+</div>
+
+<div class="card">
+  <div class="card-head">
+    <div><h2>Recently reported</h2><div class="sub">Newest lost and found items on campus</div></div>
+    <a class="btn ghost sm" href="{{ url_for('browse') }}">Browse all</a>
+  </div>
+  {% if recent %}
+  <div class="card-body tight">
+    <table>
+      <thead><tr><th></th><th>Item</th><th>Type</th><th>Category</th><th>Reported by</th><th>When</th></tr></thead>
+      <tbody>
+      {% for it in recent %}
+        <tr>
+          <td class="thumb"><img src="{{ url_for('media', name=it['photo']) }}" alt=""></td>
+          <td class="title-cell"><a href="{{ url_for('item_detail', item_id=it['id']) }}">{{ it['title'] }}</a></td>
+          <td><span class="badge {{ it['type'] }}">{{ it['type']|capitalize }}</span></td>
+          <td>{{ it['category'] }}</td>
+          <td>{{ it['student_name'] }} <span style="color:#6c757d">&middot; {{ it['department'] }}</span></td>
+          <td style="color:#6c757d">{{ it['created_at'][:10] }}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+    <div class="empty">No items reported yet. <a href="{{ url_for('report') }}">Be the first</a>.</div>
+  {% endif %}
+</div>
+
+<h2 style="font-size:16px;margin:26px 0 12px">How it works</h2>
+<div class="steps">
+  <div class="step"><div class="n">1</div><h3>Photograph the item</h3>
+    <p>One photo on any surface. The cast shadow is what matters, so daylight works best.</p></div>
+  <div class="step"><div class="n">2</div><h3>Silhouette to 64 numbers</h3>
+    <p>The dark region is isolated, normalised and turned into a descriptor that ignores colour.</p></div>
+  <div class="step"><div class="n">3</div><h3>Ranked candidates</h3>
+    <p>Cosine similarity ranks the found reports. You send a claim; the finder approves it.</p></div>
+</div>
+{% endblock %}

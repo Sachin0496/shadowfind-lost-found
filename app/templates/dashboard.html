@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}Dashboard - ShadowFind{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Student Dashboard</h1>
+  <p>Signed in as {{ current_student['name'] }} ({{ current_student['department'] }})</p>
+</div>
+
+<div class="stats">
+  <div class="stat"><div class="n">{{ stats.lost }}</div><div class="k">Lost items on campus</div></div>
+  <div class="stat"><div class="n">{{ stats.found }}</div><div class="k">Found items on campus</div></div>
+  <div class="stat"><div class="n">{{ stats.returned }}</div><div class="k">Confirmed returns</div></div>
+</div>
+
+<div class="card">
+  <div class="card-head">
+    <div><h2>My reports</h2><div class="sub">Items you have reported</div></div>
+    <a class="btn sm" href="{{ url_for('report') }}">Report an item</a>
+  </div>
+  {% if mine %}
+  <div class="card-body tight">
+    <table>
+      <thead><tr><th></th><th>Item</th><th>Type</th><th>Reported on</th><th>Shadow signature</th></tr></thead>
+      <tbody>
+      {% for it in mine %}
+        <tr>
+          <td class="thumb"><img src="{{ url_for('media', name=it['photo']) }}" alt=""></td>
+          <td class="title-cell"><a href="{{ url_for('item_detail', item_id=it['id']) }}">{{ it['title'] }}</a></td>
+          <td><span class="badge {{ it['type'] }}">{{ it['type']|capitalize }}</span></td>
+          <td style="color:#6c757d">{{ it['created_at'][:10] }}</td>
+          <td>
+            {% if it['shadow_iou'] > 0 %}
+              <span class="badge neutral">IoU {{ '%.2f'|format(it['shadow_iou']) }}</span>
+            {% else %}
+              <span class="badge neutral">Not available</span>
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+    <div class="empty">You have not reported anything yet. <a href="{{ url_for('report') }}">Report a lost or found item</a>.</div>
+  {% endif %}
+</div>
+
+<div class="card">
+  <div class="card-head">
+    <div><h2>Incoming claims</h2><div class="sub">Someone believes an item you found is theirs</div></div>
+    <a class="btn ghost sm" href="{{ url_for('claims') }}">All claims</a>
+  </div>
+  {% if incoming %}
+  <div class="card-body tight">
+    <table>
+      <thead><tr><th>Item</th><th>Claimed by</th><th>Match</th><th>Status</th><th></th></tr></thead>
+      <tbody>
+      {% for c in incoming %}
+        <tr>
+          <td class="title-cell">{{ c['found_title'] }}</td>
+          <td>{{ c['sender_name'] }} <span style="color:#6c757d">&middot; {{ c['sender_dept'] }}</span></td>
+          <td>{{ '%.2f'|format(c['score']) }}</td>
+          <td><span class="badge {{ c['status'] }}">{{ c['status']|capitalize }}</span></td>
+          <td style="text-align:right">
+            {% if c['status'] == 'pending' %}
+            <form method="post" action="{{ url_for('claim_action', claim_id=c['id'], action='accept') }}" style="display:inline">
+              <button class="btn sm ok" type="submit">Accept</button></form>
+            <form method="post" action="{{ url_for('claim_action', claim_id=c['id'], action='reject') }}" style="display:inline">
+              <button class="btn sm no" type="submit">Reject</button></form>
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+    <div class="empty">No incoming claims yet.</div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}ShadowFind{% endblock %}</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='42' r='26' fill='%231F3A6E'/><ellipse cx='50' cy='78' rx='34' ry='9' fill='%237fa8cc'/></svg>">
+</head>
+<body>
+{% set cs = current_student %}
+<nav class="nav">
+  <a class="brand" href="{{ url_for('index') }}">
+    <svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="9" r="6" fill="#fff"/><ellipse cx="12" cy="19" rx="9" ry="2.6" fill="#7fa8cc"/></svg>
+    ShadowFind
+  </a>
+  <div class="nav-links">
+    {% if cs %}
+      <a href="{{ url_for('dashboard') }}" class="{{ 'active' if request.endpoint=='dashboard' }}">Dashboard</a>
+      <a href="{{ url_for('report') }}" class="{{ 'active' if request.endpoint=='report' }}">Report Item</a>
+      <a href="{{ url_for('claims') }}" class="{{ 'active' if request.endpoint=='claims' }}">Claims</a>
+    {% endif %}
+    <a href="{{ url_for('browse') }}" class="{{ 'active' if request.endpoint=='browse' }}">Browse</a>
+  </div>
+  <div class="nav-right">
+    {% if cs %}
+      <span class="who">{{ cs['name'] }} &middot; {{ cs['department'] }}</span>
+      <a class="btn sm light" href="{{ url_for('logout') }}">Logout</a>
+    {% else %}
+      <a class="btn sm light" href="{{ url_for('login') }}">Log in</a>
+      <a class="btn sm" href="{{ url_for('register') }}" style="background:#fff;color:#1F3A6E">Register</a>
+    {% endif %}
+  </div>
+</nav>
+
+<div class="wrap">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}{% for cat, msg in messages %}
+      <div class="flash {{ cat }}">{{ msg }}</div>
+    {% endfor %}{% endif %}
+  {% endwith %}
+  {% block content %}{% endblock %}
+  <div class="footer">
+    ShadowFind &middot; campus lost &amp; found matched by shadow silhouette
+  </div>
+</div>
+</body>
+</html>

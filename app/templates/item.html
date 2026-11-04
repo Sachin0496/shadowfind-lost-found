@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}{{ item['title'] }} - ShadowFind{% endblock %}
+{% block content %}
+<div class="page-head">
+  <p style="margin-bottom:6px"><a href="{{ url_for('browse') }}">&larr; Back to browse</a></p>
+  <h1>{{ item['title'] }}</h1>
+  <p><span class="badge {{ item['type'] }}">{{ item['type']|capitalize }}</span>
+     &middot; {{ item['category'] }} &middot; reported by {{ item['student_name'] }} ({{ item['department'] }})</p>
+</div>
+
+<div class="split">
+  <div>
+    <div class="card"><div class="card-body">
+      <div class="photo-frame"><img src="{{ url_for('media', name=item['photo']) }}" alt=""></div>
+      <dl class="dl">
+        <div><dt>Type</dt><dd><span class="badge {{ item['type'] }}">{{ item['type']|capitalize }}</span></dd></div>
+        <div><dt>Category</dt><dd>{{ item['category'] }}</dd></div>
+        <div><dt>Reported</dt><dd>{{ item['created_at'][:10] }}</dd></div>
+        <div><dt>Place</dt><dd>{{ item['place'] or '-' }}</dd></div>
+        <div><dt>Date seen</dt><dd>{{ item['seen_on'] or '-' }}</dd></div>
+        <div><dt>Department</dt><dd>{{ item['department'] }}</dd></div>
+      </dl>
+      {% if item['description'] %}
+      <p class="desc">{{ item['description'] }}</p>
+      {% endif %}
+      <div class="sig-note">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="flex:none;margin-top:1px">
+          <circle cx="11" cy="9" r="6" stroke="#084298" stroke-width="2"/>
+          <ellipse cx="12" cy="19" rx="8" ry="2.4" stroke="#084298" stroke-width="2"/>
+        </svg>
+        <div>
+          Shadow silhouette extracted &mdash;
+          IoU {{ '%.2f'|format(item['shadow_iou']) }}, 64-bin descriptor stored.
+          <div style="margin-top:6px"><a class="btn ghost sm" href="{{ url_for('media', name=item['overlay']) }}" target="_blank">View detected shadow</a></div>
+        </div>
+      </div>
+    </div></div>
+  </div>
+
+  <div>
+    <div class="card">
+      <div class="card-head">
+        <div><h2>Ranked candidates</h2>
+        <div class="sub">Same category, opposite type, ordered by silhouette similarity</div></div>
+      </div>
+      {% if ranked %}
+        {% for r in ranked %}
+        <div class="match">
+          <img class="t" src="{{ url_for('media', name=r.item['photo']) }}" alt="">
+          <div class="info">
+            <div class="nm"><a href="{{ url_for('item_detail', item_id=r.item['id']) }}">{{ r.item['title'] }}</a></div>
+            <div class="mt">{{ r.item['type']|capitalize }} {{ r.item['created_at'][:10] }}
+              &middot; {{ r.item['place'] or 'place unknown' }} &middot; {{ r.item['student_name'] }}</div>
+            <div class="bar {{ 'strong' if r.score >= 0.80 }}">
+              <i style="width: {{ (r.score*100)|round|int }}%"></i>
+            </div>
+          </div>
+          <div class="score">{{ '%.2f'|format(r.score) }}<small>similar</small></div>
+          {% if current_student and not mine %}
+          <form method="post" action="{{ url_for('claim',
+                lost_id=(item['id'] if item['type']=='lost' else r.item['id']),
+                found_id=(r.item['id'] if item['type']=='lost' else item['id'])) }}">
+            <button class="btn sm" type="submit">Send claim</button>
+          </form>
+          {% endif %}
+        </div>
+        {% endfor %}
+        <div style="padding:12px 14px;color:#6c757d;font-size:12.5px;border-top:1px solid var(--line-soft)">
+          Scores at or above 0.80 are shown in green. The owner confirms one candidate before a claim is sent.
+        </div>
+      {% else %}
+        <div class="empty">
+          No comparable reports yet.
+          {% if mine %}As items of the opposite type are reported, candidates will appear here.{% endif %}
+        </div>
+      {% endif %}
+    </div>
+
+    {% if mine %}
+    <div class="card"><div class="card-body" style="color:#6c757d;font-size:13.5px">
+      This is your own report. You cannot send a claim on it.
+    </div></div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

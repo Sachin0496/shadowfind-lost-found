@@ -1,94 +1,127 @@
-# ShadowFind — Shadow Silhouette Matching for Lost and Found Items
+# ShadowFind
 
-A mini-project report for a campus lost-and-found portal, typeset to the KPR
-Institute mini-project format.
+**A campus lost-and-found app that matches items by the shape of their cast shadow, not by text descriptions.**
 
-**The idea:** when someone photographs an item, the app extracts the object's
-**cast shadow**, turns the silhouette into a 64-bin shape descriptor, and ranks
-found items against lost ones by shape — so a blue bag is compared with another
-blue bag by its outline, not by two people's descriptions of it.
+Photograph a lost or found item once. ShadowFind isolates the item's cast shadow with OpenCV, reduces the silhouette to a 64-value descriptor, and ranks the reports that look like it. A blue bag is compared with another blue bag by outline — not by two people's descriptions of it.
 
-> **Status:** this repository contains the *report* (and everything needed to
-> regenerate it). The statistics, screenshots and evaluation numbers in the
-> report are illustrative, written for a plausible academic mini-project; they
-> are not measurements from a deployed system.
+![Browse items](docs/screenshot-browse.png)
 
 ---
 
-## Read it
-
-| | |
-|---|---|
-| **[ShadowFind_Report.pdf](ShadowFind_Report.pdf)** | The finished document — 23 pages, A4 |
-
-Front matter and body follow the KPR template: cover, bonafide certificate,
-table of contents, list of tables, list of figures, list of abbreviations,
-chapters 1–5, references.
-
-**Contents:** Abstract · Introduction · Implementation · Outcome · Conclusion,
-with 11 tables and 6 figures.
-
----
-
-## How it is built
-
-The PDF is not laid out by hand. A small pipeline measures the real rendered
-height of every block and packs the pages, which is why nothing overflows and
-the contents lists can be generated from the actual layout.
-
-```
-content.py      the prose, tables and figure references (edit the report here)
-build_report.py page geometry, CSS, cover, certificate, front matter
-paginate.py     measures each block in a headless browser and packs pages
-render_pdf.py   prints the paginated HTML to PDF
-browser.py      finds a Chromium-based browser (macOS / Linux / Windows)
-make_figures.py the architecture, ER and flowchart diagrams
-make_chart.py   the two-panel study chart in Chapter 4
-mockups/        the HTML/CSS screenshots used as "UI screenshots"
-```
-
-### Rebuild
-
-Requires Python 3 with `matplotlib` and `Pillow`, and any Chromium-based
-browser (Chrome, Chromium, Edge or Brave). If it is not installed in a standard
-place, point at it:
+## Quick start
 
 ```bash
-pip install -r requirements.txt
-./make.sh
-# or: CHROME=/path/to/chrome ./make.sh
+git clone https://github.com/Sachin0496/shadowfind-lost-found.git
+cd shadowfind-lost-found
+
+python3 -m venv .venv && source .venv/bin/activate
+pip install -r app/requirements.txt
+
+python app/seed.py       # demo accounts + 11 sample reports
+cd app && python app.py  # http://127.0.0.1:5000
 ```
 
-`make.sh` regenerates the figures, repaginates, and rewrites
-`ShadowFind_Report.pdf`.
+Log in with any demo account (`ananya@college.edu`, `rahul@college.edu`, `priya@college.edu`, `karthik@college.edu`) — password **`shadow123`**.
 
-### Layout checks
+Or with Docker:
 
 ```bash
-python3 check_layout.py     # reports any page whose content overflows its frame
+docker build -t shadowfind . && docker run -p 8000:8000 shadowfind
 ```
 
 ---
 
-## Mapping to the report
+## How the matching works
 
-| Chapter | What it covers |
-|---|---|
-| 1 Abstract | Problem, method, headline results |
-| 2 Introduction | Why lost-and-found fails today; objectives, scope, plan |
-| 3 Implementation | Architecture, stack, five modules + security, testing |
-| 4 Outcome | Chart, screenshots, comparison, accuracy tables, limitations |
-| 5 Conclusion | Summary, future scope |
+```
+photo ──► greyscale + blur ──► adaptive threshold ──► largest blob ──► fill holes
+                                                          │
+                                        normalise to 64×64 │
+                                                          ▼
+                              8×8 occupancy grid  +  aspect ratio & solidity
+                                                          │
+                                           64-value descriptor, L2-normalised
+                                                          ▼
+                                     cosine similarity ──► ranked candidates
+```
 
-Figures 3.1–3.3 are diagrams generated from `make_figures.py`; 4.1–4.3 are
-mockups rendered from `mockups/*.html`; the unnumbered chart at the head of
-Chapter 4 comes from `make_chart.py`.
+The descriptor lives in `app/vision.py` and has no web dependencies, so it can be tested and benchmarked on its own:
+
+```bash
+python -c "
+import sys; sys.path.insert(0, 'app')
+import vision
+a = vision.extract_shadow(vision.make_sample('blue', 'bag', seed=1))
+b = vision.extract_shadow(vision.make_sample('blue', 'bag', seed=2))
+print('same item, two photos:', round(vision.similarity(a.descriptor, b.descriptor), 3))
+"
+```
+
+Why a grid rather than a radial histogram: an early version used 64 angular bins, but that threw away position, so a watch and a bag scored 0.97 against each other. The occupancy grid keeps *where* the mass sits; the outer ring of mostly-empty cells now carries aspect ratio and solidity.
 
 ---
 
-## Editing
+## The app
 
-Most changes only need `content.py` — it holds the report as an ordered list of
-blocks (`("p", ...)`, `("table", ...)`, `("figure", ...)`), so pages re-flow on
-their own. Cover details, the certificate and front matter live in
-`build_report.py`.
+| Route | What it does |
+|---|---|
+| `/` | Landing page with live counts and recent reports |
+| `/register`, `/login` | Hashed passwords (`werkzeug.security`), server-side validation |
+| `/dashboard` | Your reports and incoming claims |
+| `/report` | Upload an item; the shadow is extracted on submit |
+| `/browse` | Every report, filtered by type and category |
+| `/item/<id>` | The item, its detected shadow, and its ranked candidates |
+| `/claim/<lost>/<found>` | Send a claim request |
+| `/claims` | Accept, reject, or confirm a handover |
+
+![Item with ranked candidates](docs/screenshot-item.png)
+
+Status flows `pending → accepted → returned`, with `rejected` reachable from pending. Accepting one claim on a match automatically rejects the others.
+
+**Security:** parameterised SQL everywhere, `generate_password_hash`/`check_password_hash`, session checks on every protected route, uploads validated by decoding them with OpenCV (not by trusting the extension), 6 MB cap, and generated filenames.
+
+---
+
+## Tests
+
+```bash
+pip install -r requirements-dev.txt
+python -m pytest tests -q     # 21 passed
+```
+
+Covers the pipeline (descriptor length, unit norm, bounded similarity, ranking order, blank/empty input) and the routes (auth guards, upload → descriptor stored, the full claim flow, self-claim rejection, and that a wiped data directory is recreated rather than 500ing).
+
+---
+
+## The report
+
+`ShadowFind_Report.pdf` is a 23-page mini-project report written to the KPR Institute format, and the pipeline that generates it is in the repo root (`content.py`, `paginate.py`, `render_pdf.py`, `make_figures.py`). `./make.sh` regenerates it.
+
+> **Note on the report:** it was written before the app existed, so its figures (79% top-1 over 96 labelled pairs, a 24-participant survey, the accuracy tables) are **illustrative — not measurements of this implementation**. The app is what the report describes, built afterwards. If you need the report's numbers to be real, they should be measured against the app and the tables rewritten.
+
+---
+
+## Layout
+
+```
+app/
+  app.py          Flask routes, uploads, sessions
+  vision.py       shadow extraction + descriptor + matcher
+  db.py           SQLite schema and queries
+  seed.py         demo accounts and sample reports
+  templates/      Jinja2 pages
+  static/         stylesheet
+tests/            pytest suite
+docs/             screenshots
+ShadowFind_Report.pdf
+content.py, paginate.py, render_pdf.py, make_figures.py, make_chart.py, build_report.py
+```
+
+Demo photos are rendered by `vision.make_sample()`, which draws simple objects with a cast shadow at randomised position, scale and rotation — so the two photos of a given item are genuinely different frames rather than identical renders.
+
+## Limitations
+
+- Matching is shadow-only. Objects with similar outlines but different colours (a bag and a helmet, say) can score highly; colour is deliberately ignored.
+- Weak or absent shadows degrade the descriptor, which is why the report discusses a colour fallback.
+- SQLite and local file storage: fine for a campus demo, not for concurrent scale.
+- There is no CSRF token on the forms yet; add Flask-WTF before exposing this publicly.

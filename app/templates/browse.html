@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Browse - ShadowFind{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Browse items</h1>
+  <p>{{ items|length }} report{{ '' if items|length == 1 else 's' }}{% if current_student %} from other students{% endif %}.</p>
+</div>
+
+<div class="card"><div class="card-body">
+  <div class="filters">
+    <a class="chip {{ 'on' if not active_type }}" href="{{ url_for('browse', category=active_category) }}">All</a>
+    <a class="chip {{ 'on' if active_type=='lost' }}" href="{{ url_for('browse', type='lost', category=active_category) }}">Lost</a>
+    <a class="chip {{ 'on' if active_type=='found' }}" href="{{ url_for('browse', type='found', category=active_category) }}">Found</a>
+    <span style="width:14px"></span>
+    <a class="chip {{ 'on' if not active_category }}" href="{{ url_for('browse', type=active_type) }}">Any category</a>
+    {% for c in categories %}
+    <a class="chip {{ 'on' if active_category==c }}" href="{{ url_for('browse', type=active_type, category=c) }}">{{ c }}</a>
+    {% endfor %}
+  </div>
+</div></div>
+
+{% if items %}
+<div class="grid-cards">
+  {% for it in items %}
+  <article class="item-card">
+    <div class="ph"><img src="{{ url_for('media', name=it['photo']) }}" alt=""></div>
+    <div class="meta">
+      <div class="row">
+        <span class="badge {{ it['type'] }}">{{ it['type']|capitalize }}</span>
+        <span class="line">{{ it['category'] }}</span>
+      </div>
+      <h3><a href="{{ url_for('item_detail', item_id=it['id']) }}">{{ it['title'] }}</a></h3>
+      <div class="line">{{ it['place'] or 'Place not given' }} &middot; {{ it['student_name'] }} ({{ it['department'] }})</div>
+    </div>
+  </article>
+  {% endfor %}
+</div>
+{% else %}
+<div class="card"><div class="empty">Nothing here yet. Try clearing the filters.</div></div>
+{% endif %}
+{% endblock %}

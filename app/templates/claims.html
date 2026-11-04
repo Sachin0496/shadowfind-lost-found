@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Claims - ShadowFind{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Claims</h1>
+  <p>Requests you received, and the ones you sent.</p>
+</div>
+
+<div class="card">
+  <div class="card-head"><div><h2>Incoming</h2><div class="sub">Someone claims an item you reported as found</div></div></div>
+  {% if incoming %}
+  <div class="card-body tight">
+    <table>
+      <thead><tr><th>Item</th><th>Claimed by</th><th>Match</th><th>Status</th><th></th></tr></thead>
+      <tbody>
+      {% for c in incoming %}
+        <tr>
+          <td class="title-cell"><a href="{{ url_for('item_detail', item_id=c['found_id']) }}">{{ c['found_title'] }}</a></td>
+          <td>{{ c['sender_name'] }} <span style="color:#6c757d">&middot; {{ c['sender_dept'] }}</span></td>
+          <td>{{ '%.2f'|format(c['score']) }}</td>
+          <td><span class="badge {{ c['status'] }}">{{ c['status']|capitalize }}</span></td>
+          <td style="text-align:right;white-space:nowrap">
+            {% if c['status'] == 'pending' %}
+              <form method="post" action="{{ url_for('claim_action', claim_id=c['id'], action='accept') }}" style="display:inline">
+                <button class="btn sm ok" type="submit">Accept</button></form>
+              <form method="post" action="{{ url_for('claim_action', claim_id=c['id'], action='reject') }}" style="display:inline">
+                <button class="btn sm no" type="submit">Reject</button></form>
+            {% else %}<span style="color:#6c757d;font-size:12.5px">answered</span>{% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty">No incoming claims yet.</div>
+  {% endif %}
+</div>
+
+<div class="card">
+  <div class="card-head"><div><h2>Sent</h2><div class="sub">Claims you sent for items someone else found</div></div></div>
+  {% if sent %}
+  <div class="card-body tight">
+    <table>
+      <thead><tr><th>Item</th><th>Finder</th><th>Match</th><th>Status</th><th></th></tr></thead>
+      <tbody>
+      {% for c in sent %}
+        <tr>
+          <td class="title-cell">{{ c['found_title'] }}</td>
+          <td>{{ c['receiver_name'] }} <span style="color:#6c757d">&middot; {{ c['receiver_dept'] }}</span></td>
+          <td>{{ '%.2f'|format(c['score']) }}</td>
+          <td><span class="badge {{ c['status'] }}">{{ c['status']|capitalize }}</span></td>
+          <td style="text-align:right;white-space:nowrap">
+            {% if c['status'] == 'accepted' %}
+              <form method="post" action="{{ url_for('claim_action', claim_id=c['id'], action='return') }}" style="display:inline">
+                <button class="btn sm ok" type="submit">Confirm handover</button></form>
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty">You have not sent any claims yet. <a href="{{ url_for('browse') }}">Browse found items</a>.</div>
+  {% endif %}
+</div>
+{% endblock %}
