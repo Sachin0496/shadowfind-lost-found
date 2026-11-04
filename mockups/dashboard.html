@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ShadowFind — Student Dashboard</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="navbar">
+    <div class="nav-left">
+      <div class="brand">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <ellipse cx="12" cy="18.2" rx="7" ry="2.5" fill="rgba(255,255,255,0.30)"/>
+          <circle cx="12" cy="9.6" r="5.1" stroke="#ffffff" stroke-width="1.9"/>
+        </svg>
+        ShadowFind
+      </div>
+      <nav class="nav-links">
+        <a class="active" href="#">Dashboard</a>
+        <a href="#">Report Lost Item</a>
+        <a href="#">Report Found Item</a>
+        <a href="#">Matches</a>
+      </nav>
+    </div>
+    <div class="nav-right">
+      <span class="nav-user">Ananya R &middot; CSE</span>
+      <span class="nav-divider"></span>
+      <span class="btn-logout">Logout</span>
+    </div>
+  </header>
+
+  <main class="page">
+
+    <div class="page-head">
+      <h1>Student Dashboard</h1>
+      <p>Signed in as Ananya R (24CS045), Computer Science and Engineering</p>
+    </div>
+
+    <section class="stats">
+
+      <div class="card stat">
+        <div>
+          <div class="stat-num">14</div>
+          <div class="stat-cap">Lost items reported</div>
+        </div>
+        <div class="stat-ico blue">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="10.5" cy="10.5" r="6.2"/>
+            <path d="M15.2 15.2 20 20"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="card stat">
+        <div>
+          <div class="stat-num">21</div>
+          <div class="stat-cap">Found items reported</div>
+        </div>
+        <div class="stat-ico navy">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.2a2 2 0 0 0 1.7-.95l.45-.75A1.7 1.7 0 0 1 11.3 3.5h1.4a1.7 1.7 0 0 1 1.45.8l.45.75A2 2 0 0 0 16.3 6h1.2A2.5 2.5 0 0 1 20 8.5v8A2.5 2.5 0 0 1 17.5 19h-11A2.5 2.5 0 0 1 4 16.5v-8Z"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="card stat">
+        <div>
+          <div class="stat-num">9</div>
+          <div class="stat-cap">Confirmed returns</div>
+        </div>
+        <div class="stat-ico green">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 11.2V12a8 8 0 1 1-4.7-7.3"/>
+            <path d="m9 11.5 2.2 2.2L20 5"/>
+          </svg>
+        </div>
+      </div>
+
+    </section>
+
+    <section class="card report-card">
+      <div class="card-head">
+        <h2 class="card-title">My Reports</h2>
+      </div>
+      <table>
+        <colgroup>
+          <col style="width:30%">
+          <col style="width:12%">
+          <col style="width:14%">
+          <col style="width:24%">
+          <col style="width:20%">
+        </colgroup>
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Type</th>
+            <th>Reported on</th>
+            <th>Shadow signature</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="item-name">Blue Nike backpack</span></td>
+            <td><span class="badge red">Lost</span></td>
+            <td>12 Oct 2026</td>
+            <td class="sig">Extracted <span class="num">(IoU 0.90)</span></td>
+            <td><span class="badge amber">Matched</span></td>
+          </tr>
+          <tr>
+            <td><span class="item-name">Casio F-91W watch</span></td>
+            <td><span class="badge red">Lost</span></td>
+            <td>09 Oct 2026</td>
+            <td class="empty-val">Not available</td>
+            <td><span class="badge gray">Searching</span></td>
+          </tr>
+          <tr>
+            <td><span class="item-name">Black umbrella</span></td>
+            <td><span class="badge blue">Found</span></td>
+            <td>06 Oct 2026</td>
+            <td class="sig">Extracted <span class="num">(IoU 0.86)</span></td>
+            <td><span class="badge green">Returned</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="card waiting-card">
+      <div class="waiting-head">
+        <h2 class="card-title">Found items waiting for a match</h2>
+      </div>
+      <div class="wait-grid">
+
+        <div class="wait-tile">
+          <div class="photo wait-photo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.2a2 2 0 0 0 1.7-.95l.45-.75A1.7 1.7 0 0 1 11.3 3.5h1.4a1.7 1.7 0 0 1 1.45.8l.45.75A2 2 0 0 0 16.3 6h1.2A2.5 2.5 0 0 1 20 8.5v8A2.5 2.5 0 0 1 17.5 19h-11A2.5 2.5 0 0 1 4 16.5v-8Z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+          </div>
+          <div class="wait-name-row">
+            <span class="wait-name">Water bottle</span>
+            <span class="match-chip">match 0.72</span>
+          </div>
+          <div class="wait-meta">Found 14 Oct &middot; Central Library</div>
+        </div>
+
+        <div class="wait-tile">
+          <div class="photo wait-photo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.2a2 2 0 0 0 1.7-.95l.45-.75A1.7 1.7 0 0 1 11.3 3.5h1.4a1.7 1.7 0 0 1 1.45.8l.45.75A2 2 0 0 0 16.3 6h1.2A2.5 2.5 0 0 1 20 8.5v8A2.5 2.5 0 0 1 17.5 19h-11A2.5 2.5 0 0 1 4 16.5v-8Z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+          </div>
+          <div class="wait-name-row">
+            <span class="wait-name">Lunch box</span>
+            <span class="match-chip">match 0.68</span>
+          </div>
+          <div class="wait-meta">Found 14 Oct &middot; Canteen</div>
+        </div>
+
+        <div class="wait-tile">
+          <div class="photo wait-photo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.2a2 2 0 0 0 1.7-.95l.45-.75A1.7 1.7 0 0 1 11.3 3.5h1.4a1.7 1.7 0 0 1 1.45.8l.45.75A2 2 0 0 0 16.3 6h1.2A2.5 2.5 0 0 1 20 8.5v8A2.5 2.5 0 0 1 17.5 19h-11A2.5 2.5 0 0 1 4 16.5v-8Z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+          </div>
+          <div class="wait-name-row">
+            <span class="wait-name">Helmet</span>
+            <span class="match-chip">match 0.61</span>
+          </div>
+          <div class="wait-meta">Found 15 Oct &middot; Sports ground</div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+</body>
+</html>

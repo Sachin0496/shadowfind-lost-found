@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ShadowFind — Matches</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="navbar">
+    <div class="nav-left">
+      <div class="brand">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <ellipse cx="12" cy="18.2" rx="7" ry="2.5" fill="rgba(255,255,255,0.30)"/>
+          <circle cx="12" cy="9.6" r="5.1" stroke="#ffffff" stroke-width="1.9"/>
+        </svg>
+        ShadowFind
+      </div>
+      <nav class="nav-links">
+        <a href="#">Dashboard</a>
+        <a href="#">Report Lost Item</a>
+        <a href="#">Report Found Item</a>
+        <a class="active" href="#">Matches</a>
+      </nav>
+    </div>
+    <div class="nav-right">
+      <span class="nav-user">Ananya R &middot; CSE</span>
+      <span class="nav-divider"></span>
+      <span class="btn-logout">Logout</span>
+    </div>
+  </header>
+
+  <main class="page page-matches">
+
+    <nav class="crumbs">
+      <a href="#">Dashboard</a>
+      <span class="sep">/</span>
+      <span class="current">Matches</span>
+    </nav>
+
+    <div class="match-grid">
+
+      <!-- ---------------- left: the lost item ---------------- -->
+      <section class="card item-card">
+
+        <h1 class="item-title">Blue Nike backpack</h1>
+
+        <div class="photo item-photo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.2a2 2 0 0 0 1.7-.95l.45-.75A1.7 1.7 0 0 1 11.3 3.5h1.4a1.7 1.7 0 0 1 1.45.8l.45.75A2 2 0 0 0 16.3 6h1.2A2.5 2.5 0 0 1 20 8.5v8A2.5 2.5 0 0 1 17.5 19h-11A2.5 2.5 0 0 1 4 16.5v-8Z"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+        </div>
+
+        <dl class="detail-list">
+          <div class="detail-row">
+            <dt>Type</dt>
+            <dd><span class="badge red">Lost</span></dd>
+          </div>
+          <div class="detail-row">
+            <dt>Reported</dt>
+            <dd>12 Oct 2026</dd>
+          </div>
+          <div class="detail-row">
+            <dt>Department</dt>
+            <dd>CSE</dd>
+          </div>
+          <div class="detail-row">
+            <dt>Location</dt>
+            <dd>Canteen</dd>
+          </div>
+        </dl>
+
+        <p class="item-desc">Blue Nike backpack with a white swoosh, a broken left zip and a small keychain of a green dinosaur.</p>
+
+        <div class="highlight">
+          <svg class="shadow-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="8.6" r="4.1"/>
+            <ellipse cx="12" cy="17.6" rx="6.4" ry="2.2"/>
+          </svg>
+          <span>Shadow silhouette extracted &mdash; IoU 0.90 &mdash; 64-bin descriptor stored</span>
+        </div>
+
+      </section>
+
+      <!-- ---------------- right: candidate matches ---------------- -->
+      <section class="card matches-card">
+
+        <div class="matches-head">
+          <h2 class="matches-title">Top matches for this item</h2>
+          <p class="matches-sub">Ranked by silhouette similarity (cosine). Found-item photos only.</p>
+        </div>
+
+        <div class="match-list">
+
+          <article class="match-row">
+            <div class="photo thumb">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.2a2 2 0 0 0 1.7-.95l.45-.75A1.7 1.7 0 0 1 11.3 3.5h1.4a1.7 1.7 0 0 1 1.45.8l.45.75A2 2 0 0 0 16.3 6h1.2A2.5 2.5 0 0 1 20 8.5v8A2.5 2.5 0 0 1 17.5 19h-11A2.5 2.5 0 0 1 4 16.5v-8Z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+            </div>
+            <div class="match-body">
+              <div class="match-title">Found item #07 &mdash; Blue backpack</div>
+              <div class="match-meta">Found 14 Oct 2026 &middot; Physics Lab 2 &middot; Karthik S</div>
+              <div class="sim-track"><div class="sim-fill strong" style="width:91%"></div></div>
+            </div>
+            <div class="match-side">
+              <div class="score">0.91</div>
+              <button class="btn-claim" type="button">Send claim request</button>
+            </div>
+          </article>
+
+          <article class="match-row">
+            <div class="photo thumb">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.2a2 2 0 0 0 1.7-.95l.45-.75A1.7 1.7 0 0 1 11.3 3.5h1.4a1.7 1.7 0 0 1 1.45.8l.45.75A2 2 0 0 0 16.3 6h1.2A2.5 2.5 0 0 1 20 8.5v8A2.5 2.5 0 0 1 17.5 19h-11A2.5 2.5 0 0 1 4 16.5v-8Z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+            </div>
+            <div class="match-body">
+              <div class="match-title">Found item #12 &mdash; Laptop bag</div>
+              <div class="match-meta">Found 15 Oct 2026 &middot; Central Library &middot; Meera J</div>
+              <div class="sim-track"><div class="sim-fill" style="width:84%"></div></div>
+            </div>
+            <div class="match-side">
+              <div class="score">0.84</div>
+              <button class="btn-claim" type="button">Send claim request</button>
+            </div>
+          </article>
+
+          <article class="match-row">
+            <div class="photo thumb">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.2a2 2 0 0 0 1.7-.95l.45-.75A1.7 1.7 0 0 1 11.3 3.5h1.4a1.7 1.7 0 0 1 1.45.8l.45.75A2 2 0 0 0 16.3 6h1.2A2.5 2.5 0 0 1 20 8.5v8A2.5 2.5 0 0 1 17.5 19h-11A2.5 2.5 0 0 1 4 16.5v-8Z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+            </div>
+            <div class="match-body">
+              <div class="match-title">Found item #03 &mdash; Blue backpack</div>
+              <div class="match-meta">Found 11 Oct 2026 &middot; Canteen &middot; Vivek P</div>
+              <div class="sim-track"><div class="sim-fill moderate" style="width:66%"></div></div>
+            </div>
+            <div class="match-side">
+              <div class="score">0.66</div>
+              <button class="btn-claim" type="button">Send claim request</button>
+            </div>
+          </article>
+
+        </div>
+
+        <div class="match-summary">
+          <div class="ms-item">
+            <span class="ms-val">3</span>
+            <span class="ms-lbl">candidates</span>
+          </div>
+          <span class="ms-div"></span>
+          <div class="ms-item">
+            <span class="ms-val">2</span>
+            <span class="ms-lbl">strong matches</span>
+          </div>
+          <span class="ms-div"></span>
+          <div class="ms-item">
+            <span class="ms-val">0.66</span>
+            <span class="ms-lbl">lowest score</span>
+          </div>
+          <span class="ms-div"></span>
+          <div class="ms-item">
+            <span class="ms-val">64</span>
+            <span class="ms-lbl">bins compared</span>
+          </div>
+        </div>
+
+        <p class="matches-note">Scores above 0.80 are shown as strong matches. The owner confirms one candidate before a claim request is sent.</p>
+
+      </section>
+
+    </div>
+
+  </main>
+
+</body>
+</html>

@@ -1,0 +1,4 @@
+# Only needed to regenerate the figures and the PDF.
+# The committed ShadowFind_Report.pdf needs no dependencies at all.
+matplotlib>=3.7
+Pillow>=10.0

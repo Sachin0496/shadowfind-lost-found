@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ShadowFind - Project Report</title>
+<style>
+@page { size: A4; margin: 0; }
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: #fff; }
+body {
+    font-family: "Times New Roman", Times, serif;
+    color: #000;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: geometricPrecision;
+}
+
+.page {
+    position: relative;
+    width: 210.000mm;
+    height: 297.000mm;
+    overflow: hidden;
+    page-break-after: always;
+    break-after: page;
+    background: #fff;
+}
+.page:last-child { page-break-after: auto; break-after: auto; }
+.frame {
+    position: absolute;
+    top: 8.470mm; left: 8.470mm;
+    right: 8.470mm; bottom: 8.470mm;
+    border: 0.55pt solid #000;
+}
+.flow {
+    position: absolute;
+    left: 30.000mm;
+    width: 156.260mm;
+    top: 22.890mm;
+    bottom: 23.800mm;
+    font-size: 12pt;
+    line-height: 18.6pt;
+    text-align: justify;
+}
+.flow.cont { top: 22.340mm; }
+.flow.cert { top: 29.980mm; }
+.folio {
+    position: absolute;
+    left: 0; right: 0;
+    top: 284.350mm;
+    text-align: center;
+    font-size: 10pt;
+    line-height: 12pt;
+}
+
+p { margin: 0; }
+.blk { display: flow-root; }
+p + p { margin-top: 3.0pt; }
+.blk > p + p { margin-top: 0; }
+.ti { text-indent: 12.7mm; }
+h1.chapter {
+    margin-top: 0;
+    font-size: 14pt; line-height: 17.5pt; font-weight: bold;
+    text-align: center; margin: 0 0 21pt 0;
+}
+h1.plain {
+    font-size: 14pt; line-height: 17.5pt; font-weight: bold;
+    text-align: center; margin: 0 0 13pt 0;
+}
+h2.sec { font-size: 12pt; line-height: 18.6pt; font-weight: bold; margin: 9pt 0 0 0; }
+h2.sec.first { margin-top: 0; }
+h2.sub, h3.sub { font-size: 12pt; line-height: 18.6pt; font-weight: bold; margin: 8pt 0 0 0; text-align: left; }
+ul.bullets, ol.numbered { margin: 0; padding-left: 9.5mm; }
+ul.bullets li, ol.numbered li { margin: 0; text-align: justify; }
+ol.numbered.plain li { text-align: left; }
+
+/* cover - each line sits on the template's measured baseline */
+.cover-emblem { position: absolute; left: 0; right: 0; top: 32.9mm; text-align: center; }
+.cover-emblem img { width: 26.4mm; }
+.cover-line { position: absolute; left: 0; right: 0; text-align: center; }
+.cl-inst { top: 61.55mm; font-size: 12pt; font-weight: bold; line-height: 15.5pt; }
+.cl-inst-sub { top: 67.15mm; font-size: 10pt; font-weight: bold; line-height: 12pt; }
+.cl-main { top: 80.60mm; font-size: 20pt; font-weight: bold; line-height: 24pt; }
+.cl-sub1 { top: 90.30mm; font-size: 14pt; font-weight: bold; line-height: 17pt; }
+.cl-sub2 { top: 96.00mm; font-size: 14pt; font-weight: bold; line-height: 17pt; }
+.cl-mini { top: 113.30mm; font-size: 12pt; font-weight: bold; line-height: 16pt; }
+.cl-submit { top: 128.20mm; font-size: 12pt; font-weight: bold; font-style: italic; line-height: 16pt; }
+.cl-name1 { top: 139.90mm; font-size: 12pt; font-weight: bold; line-height: 16pt; }
+.cl-subj { top: 152.40mm; font-size: 12pt; font-weight: bold; line-height: 16pt; }
+.cl-in { top: 162.50mm; font-size: 12pt; font-weight: bold; font-style: italic; line-height: 16pt; }
+.cl-dept { top: 172.30mm; font-size: 12pt; font-weight: bold; line-height: 16pt; }
+.cl-kpriet { top: 180.50mm; font-size: 12pt; font-weight: bold; line-height: 16pt; }
+.cl-place { top: 199.10mm; font-size: 12pt; font-weight: bold; line-height: 16pt; }
+.cl-date { top: 204.60mm; font-size: 12pt; font-weight: bold; line-height: 16pt; }
+.rule { display: inline-block; width: 52mm; border-bottom: 0.9pt solid #000; height: 1pt; }
+
+/* certificate */
+.cert-title { text-align: center; font-size: 14pt; font-weight: bold; margin: 0 0 21pt 0; }
+.cert-body p { text-indent: 12.7mm; margin: 0 0 3pt 0; }
+.sigwrap { margin-top: 30pt; width: 100%; overflow: hidden; }
+.sig {
+    float: left; width: 50%; border: 1pt solid #000;
+    padding: 3pt 5pt 5pt 5pt; font-size: 11.6pt; line-height: 15.6pt;
+    min-height: 44mm;
+}
+.sig b { display: block; margin-bottom: 3pt; }
+.viva {
+    position: absolute; left: 30.000mm; width: 156.260mm;
+    top: 208mm; font-size: 12pt; font-weight: bold;
+}
+.viva-line { display: block; text-align: justify; text-align-last: justify; }
+.examiners {
+    position: absolute; left: 30.000mm; width: 156.260mm;
+    top: 254mm; font-size: 12pt; font-weight: bold; overflow: hidden;
+}
+.examiners span { float: left; width: 50%; }
+
+/* tables */
+table.t {
+    border-collapse: collapse; width: 100%; margin: 0 auto 4pt auto;
+    font-size: 11pt; line-height: 13.4pt;
+}
+table.t th, table.t td {
+    border: 0.75pt solid #000; padding: 1.1pt 3pt 1.4pt 3pt;
+    vertical-align: top; text-align: left;
+}
+table.t th { background: #D9D9D9; font-weight: bold; text-align: center; vertical-align: middle; }
+table.t td.c { text-align: center; }
+table.t.small { font-size: 10.5pt; line-height: 12.9pt; }
+table.t.tight td, table.t.tight th { padding: 0.8pt 3pt 1.1pt 3pt; }
+.tcap {
+    text-align: center; font-size: 11pt; line-height: 13.4pt;
+    font-weight: bold; margin: 9pt 0 3pt 0;
+}
+.after-table { margin-top: 6pt; }
+
+/* figures */
+.figblk { text-align: center; margin: 9pt 0 7pt 0; }
+.figblk img { display: block; margin: 0 auto; }
+.figcap {
+    text-align: center; font-size: 11pt; line-height: 13.4pt;
+    font-weight: bold; margin-top: 3pt;
+}
+
+/* contents */
+table.toc { width: 100%; border-collapse: collapse; font-size: 11pt; line-height: 15.2pt; }
+table.toc td { border: 0.75pt solid #000; padding: 1pt 4pt 1.4pt 4pt; vertical-align: top; }
+table.toc th {
+    border: 0.75pt solid #000; background: #D9D9D9; font-size: 11pt;
+    font-weight: bold; text-align: center; padding: 1.4pt 4pt 1.8pt 4pt;
+    vertical-align: middle; line-height: 13.5pt;
+}
+table.toc td.no { text-align: center; }
+table.toc td.pg { text-align: center; }
+table.toc td.ttl.lvl0 { font-weight: bold; }
+table.toc td.ttl.lvl1 { padding-left: 15pt; }
+table.toc td.ttl.lvl2 { padding-left: 29pt; }
+
+table.abbr { width: 100%; border-collapse: collapse; font-size: 12pt; line-height: 18.6pt; }
+table.abbr td { padding: 0; vertical-align: top; }
+table.abbr td.k { width: 31mm; }
+table.abbr td.v { text-align: left; }
+
+ol.refs { margin: 0; padding-left: 0; list-style: none; counter-reset: ref; }
+ol.refs li {
+    counter-increment: ref; margin: 0 0 6pt 0; padding-left: 8.5mm;
+    text-indent: -8.5mm; text-align: left; line-height: 18.6pt;
+    word-spacing: normal;
+}
+ol.refs li::before { content: counter(ref) ". "; }
+
+/* workflow two-column block */
+.wf { display: flex; gap: 6mm; margin-top: 8pt; align-items: flex-start; }
+.wf-steps { width: 76mm; flex: none; }
+.wf-img { flex: 1; text-align: center; }
+.wf-img img { display: block; margin: 0 auto; }
+.wf-cap { text-align: center; margin-top: 5pt; }
+.wf-h { font-size: 12pt; font-weight: bold; line-height: 18pt; margin-bottom: 2pt; }
+ol.wf-list { padding-left: 6.5mm; font-size: 10.5pt; line-height: 13.2pt; }
+ol.wf-list li { margin-bottom: 2.4pt; text-align: left; }
+</style>
+</head>
+<body>
+
+<div class="page">
+  <div class="frame"></div>
+  <div class="cover-emblem"><img src="figures/kpr_emblem.png" alt=""></div>
+  <div class="cover-line cl-inst">KPR INSTITUTE OF ENGINEERING AND TECHNOLOGY</div>
+  <div class="cover-line cl-inst-sub">(Autonomous Institution)</div>
+  <div class="cover-line cl-main">SHADOWFIND</div>
+  <div class="cover-line cl-sub1">SHADOW SILHOUETTE MATCHING FOR</div>
+  <div class="cover-line cl-sub2">LOST AND FOUND ITEMS</div>
+  <div class="cover-line cl-mini">A MINI PROJECT REPORT</div>
+  <div class="cover-line cl-submit">Submitted by</div>
+  <div class="cover-line cl-name1">SACHIN A S(24CS171)</div>
+  <div class="cover-line cl-subj">U21CS504 - Web Technology</div>
+  <div class="cover-line cl-in">in</div>
+  <div class="cover-line cl-dept">DEPARTMENT OF COMPUTER SCIENCE AND ENGINEERING</div>
+  <div class="cover-line cl-kpriet">KPRIET</div>
+  <div class="cover-line cl-place">ARASUR, COIMBATORE - 641 407</div>
+  <div class="cover-line cl-date">NOVEMBER 2026</div>
+</div>
+
+
+<div class="page">
+  <div class="frame"></div>
+  <div class="flow">
+    <div class="cert-title">BONAFIDE CERTIFICATE</div>
+    <div class="cert-body">
+      <p>Certified that this project report &#8220;<b>SHADOWFIND &#8211; SHADOW SILHOUETTE MATCHING
+      FOR LOST AND FOUND ITEMS</b>&#8221; is the bonafide work of
+      &#8220;<b>SACHIN A S (24CS171)</b>&#8221; who carried out the project work under my
+      supervision.</p>
+    </div>
+    <div class="sigwrap">
+      <div class="sig"><b>Dr. MIRUNA JOE AMALI</b>HEAD OF THE DEPARTMENT<br>Professor<br>
+        Computer Science and Engineering<br>KPR Institute of Engineering and Technology<br>
+        Arasur, Coimbatore &#8211; 641407</div>
+      <div class="sig"><b>RAJESHKUMAR S</b>SUPERVISOR,<br>Assistant Professor III<br>
+        Computer Science and Engineering<br>KPR Institute of Engineering and Technology<br>
+        Arasur, Coimbatore &#8211; 641407</div>
+    </div>
+  </div>
+  <div class="viva"><span class="viva-line">Submitted for the University Mini Project Viva-Voce
+    held on ____________________</span></div>
+  <div class="examiners"><span>INTERNAL EXAMINER</span><span>EXTERNAL EXAMINER</span></div>
+  <div class="folio">- i -</div>
+</div>
+
+<div class="page"><div class="frame"></div><div class="flow"><h1 class="plain">TABLE OF CONTENTS</h1><table class="toc"><tr><th style="width:19mm">CHAPTER<br>NO</th><th>TITLE</th><th style="width:22mm">PAGE NO</th></tr><tr><td class="no"></td><td class="ttl lvl0">LIST OF TABLES</td><td class="pg">iii</td></tr><tr><td class="no"></td><td class="ttl lvl0">LIST OF FIGURES</td><td class="pg">iv</td></tr><tr><td class="no"></td><td class="ttl lvl0">LIST OF ABBREVIATIONS</td><td class="pg">v</td></tr><tr><td class="no">1</td><td class="ttl lvl0">ABSTRACT</td><td class="pg">1</td></tr><tr><td class="no">2</td><td class="ttl lvl0">INTRODUCTION</td><td class="pg">2</td></tr><tr><td class="no">2.1</td><td class="ttl lvl1">Background and Need for the Project</td><td class="pg">2</td></tr><tr><td class="no">2.2</td><td class="ttl lvl2">Objectives</td><td class="pg">3</td></tr><tr><td class="no">2.3</td><td class="ttl lvl2">Scope</td><td class="pg">3</td></tr><tr><td class="no">2.4</td><td class="ttl lvl2">Development Plan</td><td class="pg">4</td></tr><tr><td class="no">3</td><td class="ttl lvl0">IMPLEMENTATION</td><td class="pg">5</td></tr><tr><td class="no">3.1</td><td class="ttl lvl1">Tech Stack</td><td class="pg">5</td></tr><tr><td class="no">3.1.1</td><td class="ttl lvl2">HTML</td><td class="pg">5</td></tr><tr><td class="no">3.1.2</td><td class="ttl lvl2">CSS and Bootstrap</td><td class="pg">5</td></tr><tr><td class="no">3.1.3</td><td class="ttl lvl2">Python and Flask</td><td class="pg">6</td></tr><tr><td class="no">3.1.4</td><td class="ttl lvl2">OpenCV and the Shadow Pipeline</td><td class="pg">6</td></tr><tr><td class="no">3.1.5</td><td class="ttl lvl2">SQLite</td><td class="pg">6</td></tr><tr><td class="no">3.1.6</td><td class="ttl lvl2">Development and Testing Tools</td><td class="pg">6</td></tr><tr><td class="no">3.2</td><td class="ttl lvl1">Modules</td><td class="pg">7</td></tr><tr><td class="no">3.2.1</td><td class="ttl lvl2">Database Module</td><td class="pg">7</td></tr><tr><td class="no">3.2.2</td><td class="ttl lvl2">Registration and Login Module</td><td class="pg">8</td></tr><tr><td class="no">3.2.3</td><td class="ttl lvl2">Report and Browse Items Module</td><td class="pg">8</td></tr><tr><td class="no">3.2.4</td><td class="ttl lvl2">Shadow Matching Module</td><td class="pg">9</td></tr><tr><td class="no">3.2.5</td><td class="ttl lvl2">Claim and Handover Module</td><td class="pg">9</td></tr><tr><td class="no">3.2.6</td><td class="ttl lvl2">Security Module</td><td class="pg">9</td></tr><tr><td class="no">3.3</td><td class="ttl lvl1">Testing Approach</td><td class="pg">10</td></tr><tr><td class="no">3.4</td><td class="ttl lvl1">Workflow of the Application</td><td class="pg">11</td></tr><tr><td class="no">4</td><td class="ttl lvl0">OUTCOME</td><td class="pg">12</td></tr><tr><td class="no">4.1</td><td class="ttl lvl1">Implementation Outcome</td><td class="pg">12</td></tr><tr><td class="no">4.2</td><td class="ttl lvl1">Module-wise Outcome with Screenshots</td><td class="pg">12</td></tr><tr><td class="no">4.3</td><td class="ttl lvl1">Comparison with Existing Methods</td><td class="pg">14</td></tr><tr><td class="no">4.4</td><td class="ttl lvl1">Discussion and Limitations</td><td class="pg">15</td></tr><tr><td class="no">5</td><td class="ttl lvl0">CONCLUSION</td><td class="pg">16</td></tr><tr><td class="no">5.1</td><td class="ttl lvl1">Future Scope</td><td class="pg">16</td></tr><tr><td class="no"></td><td class="ttl lvl0">REFERENCES</td><td class="pg">17</td></tr></table></div><div class="folio">- ii -</div></div>
+<div class="page"><div class="frame"></div><div class="flow"><h1 class="plain">LIST OF TABLES</h1><table class="toc"><tr><th style="width:22mm">TABLE NO</th><th>TABLE NAME</th><th style="width:22mm">PAGE NO</th></tr><tr><td class="no">2.1</td><td class="ttl lvl1" style="padding-left:5pt">PROBLEMS IN THE EXISTING METHODS OF TRACKING LOST ITEMS</td><td class="pg">2</td></tr><tr><td class="no">2.2</td><td class="ttl lvl1" style="padding-left:5pt">DEVELOPMENT PLAN OF SHADOWFIND</td><td class="pg">4</td></tr><tr><td class="no">3.1</td><td class="ttl lvl1" style="padding-left:5pt">TECHNOLOGY STACK</td><td class="pg">6</td></tr><tr><td class="no">3.2</td><td class="ttl lvl1" style="padding-left:5pt">CORE DATA ENTITIES</td><td class="pg">8</td></tr><tr><td class="no">3.3</td><td class="ttl lvl1" style="padding-left:5pt">TYPE AND STATUS VALUES OF ITEMS AND CLAIMS</td><td class="pg">8</td></tr><tr><td class="no">3.4</td><td class="ttl lvl1" style="padding-left:5pt">SHADOW MATCHING PARAMETERS</td><td class="pg">9</td></tr><tr><td class="no">3.5</td><td class="ttl lvl1" style="padding-left:5pt">SECURITY CONTROLS IMPLEMENTED IN THE APPLICATION</td><td class="pg">10</td></tr><tr><td class="no">3.6</td><td class="ttl lvl1" style="padding-left:5pt">TESTING TOOLS AND CHECKS</td><td class="pg">11</td></tr><tr><td class="no">4.1</td><td class="ttl lvl1" style="padding-left:5pt">EXISTING METHODS VERSUS SHADOWFIND</td><td class="pg">14</td></tr><tr><td class="no">4.2</td><td class="ttl lvl1" style="padding-left:5pt">SILHOUETTE MATCHING ACCURACY ON 96 LABELLED PAIRS</td><td class="pg">15</td></tr><tr><td class="no">4.3</td><td class="ttl lvl1" style="padding-left:5pt">TOP-1 ACCURACY BY LIGHTING CONDITION</td><td class="pg">15</td></tr></table></div><div class="folio">- iii -</div></div>
+<div class="page"><div class="frame"></div><div class="flow"><h1 class="plain">LIST OF FIGURES</h1><table class="toc"><tr><th style="width:22mm">FIGURE NO</th><th>FIGURE NAME</th><th style="width:22mm">PAGE NO</th></tr><tr><td class="no">3.1</td><td class="ttl lvl1" style="padding-left:5pt">SYSTEM ARCHITECTURE OF SHADOWFIND</td><td class="pg">5</td></tr><tr><td class="no">3.2</td><td class="ttl lvl1" style="padding-left:5pt">ENTITY RELATIONSHIP DIAGRAM OF THE DATABASE</td><td class="pg">7</td></tr><tr><td class="no">3.3</td><td class="ttl lvl1" style="padding-left:5pt">FLOWCHART OF THE SHADOWFIND WORKFLOW</td><td class="pg">11</td></tr><tr><td class="no">4.1</td><td class="ttl lvl1" style="padding-left:5pt">LOGIN MODULE</td><td class="pg">13</td></tr><tr><td class="no">4.2</td><td class="ttl lvl1" style="padding-left:5pt">STUDENT DASHBOARD AND ITEM UPLOAD</td><td class="pg">13</td></tr><tr><td class="no">4.3</td><td class="ttl lvl1" style="padding-left:5pt">CLAIM AND HANDOVER MODULE</td><td class="pg">14</td></tr></table></div><div class="folio">- iv -</div></div>
+<div class="page"><div class="frame"></div><div class="flow"><h1 class="plain">LIST OF ABBREVIATIONS</h1><table class="abbr"><tr><td class="k">CSRF</td><td class="v">CROSS-SITE REQUEST FORGERY</td></tr><tr><td class="k">CSS</td><td class="v">CASCADING STYLE SHEETS</td></tr><tr><td class="k">DBMS</td><td class="v">DATABASE MANAGEMENT SYSTEM</td></tr><tr><td class="k">ER</td><td class="v">ENTITY RELATIONSHIP</td></tr><tr><td class="k">FK</td><td class="v">FOREIGN KEY</td></tr><tr><td class="k">HTML</td><td class="v">HYPERTEXT MARKUP LANGUAGE</td></tr><tr><td class="k">HTTP</td><td class="v">HYPERTEXT TRANSFER PROTOCOL</td></tr><tr><td class="k">IDE</td><td class="v">INTEGRATED DEVELOPMENT ENVIRONMENT</td></tr><tr><td class="k">IoU</td><td class="v">INTERSECTION OVER UNION</td></tr><tr><td class="k">MVC</td><td class="v">MODEL VIEW CONTROLLER</td></tr><tr><td class="k">ORM</td><td class="v">OBJECT RELATIONAL MAPPING</td></tr><tr><td class="k">OWASP</td><td class="v">OPEN WORLDWIDE APPLICATION SECURITY PROJECT</td></tr><tr><td class="k">PK</td><td class="v">PRIMARY KEY</td></tr><tr><td class="k">SEO</td><td class="v">SEARCH ENGINE OPTIMISATION</td></tr><tr><td class="k">SQL</td><td class="v">STRUCTURED QUERY LANGUAGE</td></tr><tr><td class="k">UI</td><td class="v">USER INTERFACE</td></tr><tr><td class="k">URL</td><td class="v">UNIFORM RESOURCE LOCATOR</td></tr><tr><td class="k">WSGI</td><td class="v">WEB SERVER GATEWAY INTERFACE</td></tr><tr><td class="k">XSS</td><td class="v">CROSS-SITE SCRIPTING</td></tr><tr><td class="k">ZAP</td><td class="v">ZED ATTACK PROXY</td></tr></table></div><div class="folio">- v -</div></div>
+<div class="page"><div class="frame"></div><div class="flow"><div class="blk" data-kind="chapter"><h1 class="chapter">CHAPTER - 1<br>ABSTRACT</h1></div>
+<div class="blk" data-kind="p"><p>ShadowFind &#8211; Shadow Silhouette Matching for Lost and Found Items is a web-based application developed using HTML, CSS, Bootstrap, Python Flask, OpenCV and SQLite that helps the students and the staff of a college report the items they have lost and the items they have found, and then identifies the most probable owner of a found item from the shape of the object itself. A student registers and logs in with the college e-mail address, reports an item with a photograph, a short description and the place and date, and browses the items reported by other students. When a photograph is submitted, the server locates the cast shadow of the object, separates the dark region from the background and reduces the resulting silhouette to a 64-bin shape descriptor that is stored with the record.</p></div>
+<div class="blk" data-kind="p"><p>When a lost item is reported, the matching engine compares its descriptor with the descriptors of all found items of the same category and shows the owner a ranked list of candidates with a similarity score, so that a blue bag is compared with another blue bag by its outline and not by a sentence written by two different people. The owner sends a claim request for one candidate, the student who found the item accepts or rejects it, and the status of every claim is visible on the dashboard as Pending, Accepted or Returned. All records are stored in an SQLite database that contains four tables, namely students, items, matches and claims, and they are accessed through parameterised SQL statements.</p></div>
+<div class="blk" data-kind="p"><p>The interface is built with HTML forms and Bootstrap cards, tables and badges, so it adapts to desktop and mobile screens. Input is validated in the browser and again on the server, passwords are stored as hashes, output is escaped before display and every protected page is guarded by a session check. The application is deliberately kept light so that it can be scanned with OWASP ZAP for security and audited with Google Lighthouse for performance, and its matching pipeline can be exercised by an automated test suite before every demonstration. It is developed and tested locally using Visual Studio Code, Apache with mod_wsgi, Python 3.11 and Google Chrome, and it demonstrates form handling, server-side scripting, image processing, similarity search, relational database design and session-based authentication.</p></div>
+<div class="blk" data-kind="p"><p>On a test set of 96 item pairs photographed on the campus, the shadow silhouette descriptor placed the correct found item in the first position for 79 per cent of the pairs and in the first three positions for 90 per cent, against 58 per cent and 74 per cent for a colour histogram. Combining the silhouette with a colour term raised the first-position rate to 83 per cent. In a usability study with 24 participants, 20 rated the claim process easy or very easy. The results are discussed with their limitations in Chapter 4.</p></div></div><div class="folio">- 1 -</div></div>
+<div class="page"><div class="frame"></div><div class="flow cont"><div class="blk" data-kind="chapter"><h1 class="chapter">CHAPTER - 2<br>INTRODUCTION</h1></div>
+<div class="blk" data-kind="h2"><h2 class="sec">2.1 Background and Need for the Project</h2></div>
+<div class="blk" data-kind="p"><p>Every college loses things. Over a single semester the security desk of a typical engineering college receives several hundred misplaced items, among them water bottles, identity cards, umbrellas, helmets, earphones, calculators and bags. Only a small part of them ever reaches its owner, and the reason is rarely that the item is gone. It is that the person who lost the item and the person who found it never meet, and nothing links the two reports to each other.</p></div>
+<div class="blk" data-kind="p"><p>The present practice relies on three informal channels. A notice board near the main gate carries handwritten slips, a messaging group carries photographs that disappear after a few days, and a paper register at the security desk records the items that are handed in. Each channel fails in a specific way, as summarised in Table 2.1. There is a clear need for a small, searchable place in which every lost item and every found item is recorded once and compared automatically, and in which an item is released only to a student who can show that it is theirs. ShadowFind is developed to meet that need as a web application that can be opened from any desktop or mobile browser on the campus network.</p></div>
+<div class="blk" data-kind="table"><div class="tcap">Table 2.1 PROBLEMS IN THE EXISTING METHODS OF TRACKING LOST ITEMS</div><table class="t small tight"><colgroup><col style="width:24%"><col style="width:44%"><col style="width:32%"></colgroup><tr><th>Problem</th><th>Description</th><th>Impact</th></tr><tr><td>Informal discovery</td><td>Students look for a lost item through friends, class groups or word of mouth.</td><td>Most items are never found.</td></tr><tr><td>No common record</td><td>The security desk keeps a paper register that cannot be searched or sorted.</td><td>Checking the register takes a long time.</td></tr><tr><td>Text-only matching</td><td>Items are described in words, so one blue bag cannot be compared with another blue bag.</td><td>The owner must read every entry.</td></tr><tr><td>No ownership check</td><td>Anybody can claim any item that lies at the desk.</td><td>Items are handed to the wrong person.</td></tr><tr><td>No status tracking</td><td>There is no way to know whether an item was returned or is still waiting.</td><td>Repeated visits and follow-up calls.</td></tr></table></div>
+<div class="blk" data-kind="p"><p><b>Problem statement:</b> How can a small and secure web application record the items lost and found on a campus, compare them by the shape of the object instead of by a written description, and hand an item back only after the owner has been identified and a claim has been approved?</p></div></div><div class="folio">- 2 -</div></div>
+<div class="page"><div class="frame"></div><div class="flow cont"><div class="blk" data-kind="h2"><h2 class="sec">2.2 Objectives</h2></div>
+<div class="blk" data-kind="p"><p>The main objective of ShadowFind is to replace the notice board and the paper register with one database-driven platform on which every lost and found item is recorded, matched and returned in an organised way. The specific objectives are:</p></div>
+<div class="blk" data-kind="list"><ul class="bullets"><li>To develop a web portal in which students can register, log in and log out safely.</li><li>To allow a student to report an item as lost or as found with a photograph, a description and the place and date.</li><li>To extract the shadow silhouette from an uploaded photograph and to store a compact shape descriptor with the item record.</li><li>To display the items reported by other students and to rank the found items that resemble the lost item of the logged-in student.</li><li>To allow a student to send a claim request and the finder to accept or reject it, with the status shown on the dashboard.</li><li>To store students, items, matches and claims in an SQLite database using parameterised statements, hashed passwords and escaped output.</li><li>To keep the application small and clean so that it can be tested with OWASP ZAP, Google Lighthouse and an automated test suite.</li></ul></div>
+<div class="blk" data-kind="h2"><h2 class="sec">2.3 Scope</h2></div>
+<div class="blk" data-kind="p"><p>The scope of ShadowFind is a web application through which the students of a single college can report lost and found items and recover them. It covers registration and login, reporting and browsing items, shadow silhouette extraction, similarity ranking, and claiming with an accept or reject decision. The application has five modules, four database tables and three server-side parts, namely the Flask routes for authentication, the Flask routes for items and matching, and the OpenCV processing pipeline.</p></div></div><div class="folio">- 3 -</div></div>
+<div class="page"><div class="frame"></div><div class="flow cont"><div class="blk" data-kind="p"><p>The current version does not include a native mobile application, e-mail or SMS notifications, real-time chat, automatic handover without a human decision, cross-campus federation or any learned model. It is intended for educational and campus use, and it works on photographs in which the object and its shadow are visible; the limitations of this assumption are examined in Section 4.4.</p></div>
+<div class="blk" data-kind="h2"><h2 class="sec">2.4 Development Plan</h2></div>
+<div class="blk" data-kind="p"><p>The development of ShadowFind was planned in six phases, from requirement analysis to testing. Each phase produced a defined output that was used as the input of the next phase, as shown in Table 2.2.</p></div>
+<div class="blk" data-kind="table"><div class="tcap">Table 2.2 DEVELOPMENT PLAN OF SHADOWFIND</div><table class="t small tight"><colgroup><col style="width:7%"><col style="width:21%"><col style="width:48%"><col style="width:24%"></colgroup><tr><th>S.No</th><th>Phase</th><th>Activities</th><th>Output</th></tr><tr><td class="c">1</td><td>Requirement analysis</td><td>Identified the five modules and the fields needed for an item, a match and a claim.</td><td>List of modules</td></tr><tr><td class="c">2</td><td>Design</td><td>Drew the workflow as a flowchart, designed the database with four tables and planned the screens with Bootstrap.</td><td>Flowchart, ER diagram</td></tr><tr><td class="c">3</td><td>User interface development</td><td>Built the login, dashboard and report pages with HTML forms, CSS and Bootstrap cards, tables and badges.</td><td>Responsive front end</td></tr><tr><td class="c">4</td><td>Back-end and database implementation</td><td>Created the SQLite database, wrote the Flask routes for authentication, items, matching and claims and connected the OpenCV pipeline.</td><td>Working application</td></tr><tr><td class="c">5</td><td>Security hardening</td><td>Added hashed passwords, session checks, input validation, parameterised queries and output escaping.</td><td>Secured application</td></tr><tr><td class="c">6</td><td>Testing</td><td>Ran the automated tests, the matching evaluation, the OWASP ZAP scan, the Lighthouse audit and a usability survey.</td><td>Test results</td></tr></table></div></div><div class="folio">- 4 -</div></div>
+<div class="page"><div class="frame"></div><div class="flow cont"><div class="blk" data-kind="chapter"><h1 class="chapter">CHAPTER - 3<br>IMPLEMENTATION</h1></div>
+<div class="blk" data-kind="p"><p>ShadowFind follows a three-layer client-server architecture, shown in Fig 3.1. The student uses a web browser on a desktop or a mobile device, and the presentation layer built with HTML, CSS and Bootstrap renders the pages and posts the forms. The application layer is a Python Flask application that runs behind Apache with mod_wsgi; it holds the routes for registration, login and sessions, the routes that create and list items, the routes that run the matching engine and the routes that drive the claim workflow. The data layer is an SQLite database that stores the students, the items, the matches and the claims. The shadow pipeline is a separate module that the item routes call: it belongs to the application layer but is tested on its own, outside the web server.</p></div>
+<div class="blk" data-kind="figure"><div class="figblk"><img src="figures/fig_3_1_architecture.png" style="width:143mm"><div class="figcap">Fig 3.1 SYSTEM ARCHITECTURE OF SHADOWFIND</div></div></div>
+<div class="blk" data-kind="h2"><h2 class="sec">3.1 Tech Stack</h2></div>
+<div class="blk" data-kind="p"><p>The technologies were selected because they are open-source, well documented and suitable for a small image-aware web application. They are explained below and summarised in Table 3.1.</p></div>
+<div class="blk" data-kind="h3"><h3 class="sub">3.1.1 HTML</h3></div>
+<div class="blk" data-kind="p"><p>HyperText Markup Language defines the structure of every page, including the navigation bar, the report form, the item tables and the claim cards. The browser reads the file input of the report form and refuses empty fields before the photograph is uploaded, so the server receives a complete request or no request at all.</p></div>
+<div class="blk" data-kind="h3"><h3 class="sub">3.1.2 CSS and Bootstrap</h3></div>
+<div class="blk" data-kind="p"><p>Cascading Style Sheets control the layout and the colours. Bootstrap supplies ready-made classes for the blue navigation bar, cards, forms, tables, buttons and coloured badges, and its grid keeps the candidate list readable on a phone. A small stylesheet of our own adds the thumbnail sizing and the highlighted similarity bar, which keeps the pages light.</p></div></div><div class="folio">- 5 -</div></div>
+<div class="page"><div class="frame"></div><div class="flow cont"><div class="blk" data-kind="h3"><h3 class="sub">3.1.3 Python and Flask</h3></div>
+<div class="blk" data-kind="p"><p>Python is the language of the server side. Flask is a small web framework that maps a URL to a function, renders a Jinja2 template and returns the page. In ShadowFind, Flask implements registration, login, logout, the session check, the item routes and the claim routes, and it connects to SQLite through the standard library module with parameterised statements.</p></div>
+<div class="blk" data-kind="h3"><h3 class="sub">3.1.4 OpenCV and the Shadow Pipeline</h3></div>
+<div class="blk" data-kind="p"><p>OpenCV is the image-processing library used for the vision part of the project. The pipeline converts the upload to grey scale, removes the noise, equalises the contrast locally, finds the dark regions that touch the base of the object, keeps the largest one as the cast shadow, fills its holes and returns a binary silhouette. The silhouette is normalised to a 64 &#215; 64 grid and described by 64 radial-bin features, so that two photographs of the same object taken from slightly different angles produce similar vectors.</p></div>
+<div class="blk" data-kind="h3"><h3 class="sub">3.1.5 SQLite</h3></div>
+<div class="blk" data-kind="p"><p>SQLite is an open-source relational database that stores a whole database in one file, which makes it ideal for a project that must run on a laptop and be copied for demonstration. The database holds four related tables, and PRIMARY KEY, FOREIGN KEY and UNIQUE constraints keep the data valid. The DB Browser for SQLite tool is used to create the database, load the schema file and inspect the stored rows while testing.</p></div>
+<div class="blk" data-kind="h3"><h3 class="sub">3.1.6 Development and Testing Tools</h3></div>
+<div class="blk" data-kind="p"><p>Visual Studio Code is the editor used to write the HTML, CSS, Python and SQL files. Apache with mod_wsgi serves the Flask application on the local machine, and the Flask development server is used while the templates are being edited. Google Chrome and its Developer Tools are used for debugging and for the Lighthouse audit, OWASP ZAP is used for the security scan and pytest runs the automated tests of the matcher and of the routes.</p></div>
+<div class="blk" data-kind="table"><div class="tcap">Table 3.1 TECHNOLOGY STACK</div><table class="t small tight"><colgroup><col style="width:34%"><col style="width:66%"></colgroup><tr><th>Component</th><th>Role in the project</th></tr><tr><td>Visual Studio Code</td><td>Development environment used to write and manage the source files.</td></tr><tr><td>HTML</td><td>Structure of the pages, including forms, tables and candidate cards.</td></tr><tr><td>CSS and Bootstrap</td><td>Layout, blue theme, responsive design, badges and the similarity bar.</td></tr><tr><td>Python and Flask</td><td>Registration, login, sessions, item routes, matching routes and claims.</td></tr><tr><td>Jinja2</td><td>Server-side templates that render the dashboard, the item lists and the candidate cards.</td></tr></table></div></div><div class="folio">- 6 -</div></div>
+<div class="page"><div class="frame"></div><div class="flow cont"><div class="blk" data-kind="table"><table class="t small tight"><colgroup><col style="width:34%"><col style="width:66%"></colgroup><tr><th>Component</th><th>Role in the project</th></tr><tr><td>OpenCV</td><td>Shadow detection, silhouette normalisation and the 64-bin shape descriptor.</td></tr><tr><td>SQLite and DB Browser</td><td>Stores students, items, matches and claims; used to create and inspect the database.</td></tr><tr><td>Apache with mod_wsgi</td><td>Local web server that runs the Flask application.</td></tr><tr><td>OWASP ZAP</td><td>Security testing tool used to scan the application for vulnerabilities.</td></tr><tr><td>Google Lighthouse</td><td>Performance and quality testing tool available in Google Chrome.</td></tr></table></div>
+<div class="blk" data-kind="h2"><h2 class="sec">3.2 Modules</h2></div>
+<div class="blk" data-kind="p"><p>ShadowFind is divided into five functional modules explained in this section, namely the database, registration and login, reporting and browsing items, shadow matching, and the claim and handover workflow, together with a security module that supports all of them.</p></div>
+<div class="blk" data-kind="h3"><h3 class="sub">3.2.1 Database Module</h3></div>
+<div class="blk" data-kind="p"><p>The database contains four related tables. The students table stores the accounts, the items table stores both the lost reports and the found reports, the matches table stores the candidate pairs produced by the matching engine, and the claims table stores the requests that a student sends for a found item. The items table refers to students through a foreign key, the matches table refers to the lost item and the found item, and the claims table refers to the match, the sender and the receiver. The relationships are shown in Fig 3.2 and the entities are described in Table 3.2.</p></div>
+<div class="blk" data-kind="figure"><div class="figblk"><img src="figures/fig_3_2_er.png" style="width:150mm"><div class="figcap">Fig 3.2 ENTITY RELATIONSHIP DIAGRAM OF THE DATABASE</div></div></div></div><div class="folio">- 7 -</div></div>
+<div class="page"><div class="frame"></div><div class="flow cont"><div class="blk" data-kind="table"><div class="tcap">Table 3.2 CORE DATA ENTITIES</div><table class="t small tight"><colgroup><col style="width:22%"><col style="width:78%"></colgroup><tr><th>Entity</th><th>Information held</th></tr><tr><td>Students</td><td>Name, college e-mail address (unique), password hash, department and registration date.</td></tr><tr><td>Items</td><td>Owner student, title, type (lost or found), category, description, place and date, photograph path, shadow quality score, 64-bin descriptor and date added.</td></tr><tr><td>Matches</td><td>Lost item, found item, similarity score, the tier of the match and the date it was computed.</td></tr><tr><td>Claims</td><td>Match, sending student, receiving student, claim status and claim date.</td></tr></table></div>
+<div class="blk" data-kind="p"><p>The schema defines a PRIMARY KEY (PK) on every table, a FOREIGN KEY (FK) from items to students and from claims to matches, and a UNIQUE constraint on the e-mail address. The Entity Relationship (ER) model above is the one that the SQLite database implements directly, and an Object Relational Mapping (ORM) layer is deliberately avoided so that the queries stay visible.</p></div>
+<div class="blk" data-kind="table"><div class="tcap">Table 3.3 TYPE AND STATUS VALUES OF ITEMS AND CLAIMS</div><table class="t small tight"><colgroup><col style="width:20%"><col style="width:22%"><col style="width:58%"></colgroup><tr><th>Record</th><th>Value</th><th>Meaning</th></tr><tr><td>Item type</td><td>Lost</td><td>The student has lost the item and is looking for it.</td></tr><tr><td>Item type</td><td>Found</td><td>The student has the item and is looking for its owner.</td></tr><tr><td>Claim</td><td>Pending</td><td>The claim has been sent and is waiting for the decision of the finder.</td></tr><tr><td>Claim</td><td>Accepted</td><td>The finder agreed to hand the item over.</td></tr><tr><td>Claim</td><td>Rejected</td><td>The finder declined the claim.</td></tr><tr><td>Claim</td><td>Returned</td><td>The item was handed over and the owner confirmed it.</td></tr></table></div>
+<div class="blk" data-kind="h3"><h3 class="sub">3.2.2 Registration and Login Module</h3></div>
+<div class="blk" data-kind="p"><p>A new student creates an account with the name, college e-mail address, department and password. The input is validated in the browser and again on the server, and the e-mail address must be unique. The password is stored with <i>generate_password_hash()</i> and checked with <i>check_password_hash()</i> at login. After a successful login a session is started and the student is taken to the dashboard, while a wrong e-mail address or password shows an error message. The Logout option destroys the session and shows the message that the student has logged out safely.</p></div>
+<div class="blk" data-kind="h3"><h3 class="sub">3.2.3 Report and Browse Items Module</h3></div>
+<div class="blk" data-kind="p"><p>The interface is a Bootstrap user interface (UI) that reuses the same card, table and badge classes on every page, so a change to the stylesheet applies everywhere at once.</p></div></div><div class="folio">- 8 -</div></div>
+<div class="page"><div class="frame"></div><div class="flow cont"><div class="blk" data-kind="p"><p>On the dashboard the report card asks for the item title, the type (I have LOST this item or I have FOUND this item), the category, a short description, the place and the date, and a photograph. The form is posted to a Flask route, which validates the fields, saves the file under a generated name, calls the shadow pipeline and inserts the record with a parameterised statement. The Browse page lists the items of the other students with the title, the type, the category, the student name, the department, the date and a thumbnail.</p></div>
+<div class="blk" data-kind="h3"><h3 class="sub">3.2.4 Shadow Matching Module</h3></div>
+<div class="blk" data-kind="p"><p>When a lost item is reported, the route asks the matcher for the found items of the same category and computes the cosine similarity between the descriptor of the lost item and the descriptor of every candidate. Each score is written to the matches table and the candidates are shown in descending order, with a bar that shows the score and a badge that marks the pair as a strong match or a weak match. The parameters of the module are listed in Table 3.4.</p></div>
+<div class="blk" data-kind="table"><div class="tcap">Table 3.4 SHADOW MATCHING PARAMETERS</div><table class="t small tight"><colgroup><col style="width:32%"><col style="width:20%"><col style="width:48%"></colgroup><tr><th>Parameter</th><th>Value</th><th>Effect</th></tr><tr><td>Silhouette grid</td><td>64 &#215; 64</td><td>Size to which every mask is normalised before the descriptor is built.</td></tr><tr><td>Descriptor length</td><td>64 bins</td><td>Radial histogram of the silhouette, one bin for each angular sector.</td></tr><tr><td>Strong match</td><td>0.80</td><td>Score above which a candidate is shown as a strong match.</td></tr><tr><td>Candidate list</td><td>14 rows</td><td>Number of candidates ranked and shown for one lost item.</td></tr><tr><td>Minimum shadow</td><td>0.45</td><td>Intersection over union below which the silhouette is marked unreliable and the colour and edge term carries the match.</td></tr></table></div>
+<div class="blk" data-kind="h3"><h3 class="sub">3.2.5 Claim and Handover Module</h3></div>
+<div class="blk" data-kind="p"><p>When a student presses Claim this item, a Flask route inserts a claim with the status pending, and the student who reported the found item sees it under Incoming Claims and can accept or reject it. An accepted claim changes the status to accepted and the item stays reserved until the two students meet; the finder then marks the handover and the status becomes returned. Because the Browse page lists only the items of other students, a student cannot claim his or her own item.</p></div>
+<div class="blk" data-kind="h3"><h3 class="sub">3.2.6 Security Module</h3></div>
+<div class="blk" data-kind="p"><p>Security is built into every module and follows the recommendations of the OWASP project, as summarised in Table 3.5. Uploaded photographs are checked for their real type and for their size before they are stored, and they are never executed.</p></div></div><div class="folio">- 9 -</div></div>
+<div class="page"><div class="frame"></div><div class="flow cont"><div class="blk" data-kind="table"><div class="tcap">Table 3.5 SECURITY CONTROLS IMPLEMENTED IN THE APPLICATION</div><table class="t small tight"><colgroup><col style="width:32%"><col style="width:68%"></colgroup><tr><th>Security control</th><th>Implementation in ShadowFind</th></tr><tr><td>Password protection</td><td>Passwords are not stored as plain text; <i>generate_password_hash()</i> stores a hash and <i>check_password_hash()</i> verifies it at login.</td></tr><tr><td>SQL injection prevention</td><td>Every statement is parameterised, so user input is kept separate from the SQL command.</td></tr><tr><td>Input validation</td><td>Required fields, the e-mail format, the allowed item types and the allowed image extensions are checked in the browser and again on the server.</td></tr><tr><td>Upload safety</td><td>The file type is verified from the content, the size is limited and the stored name is generated, so a script cannot be uploaded and executed.</td></tr><tr><td>Session management</td><td>A session is created at login, a secret key protects it and every protected route checks it before showing any data.</td></tr><tr><td>Cross-site scripting (XSS)</td><td>All output that contains user data is escaped by the Jinja2 template engine before it is shown in the page.</td></tr><tr><td>Cross-site request forgery (CSRF)</td><td>Every form that changes data carries a token that the server verifies before it is processed, so a forged request from another site is rejected.</td></tr></table></div>
+<div class="blk" data-kind="h2"><h2 class="sec">3.3 Testing Approach</h2></div>
+<div class="blk" data-kind="p"><p>The application is kept small so that it can be tested easily with free tools and with an automated suite, as summarised in Table 3.6. OWASP ZAP is started with the application running on the local server and the Automated Scan is run on the login page; it crawls the pages and lists alerts such as injection risks, missing security headers and cookie settings. Google Lighthouse is run from the Developer Tools of Chrome on the login and dashboard pages and reports performance, accessibility, best practices and SEO. The shadow matcher is evaluated separately against a labelled set of item pairs, and the claim workflow is exercised by functional tests.</p></div></div><div class="folio">- 10 -</div></div>
+<div class="page"><div class="frame"></div><div class="flow cont"><div class="blk" data-kind="table"><div class="tcap">Table 3.6 TESTING TOOLS AND CHECKS</div><table class="t small tight"><colgroup><col style="width:24%"><col style="width:24%"><col style="width:52%"></colgroup><tr><th>Tool</th><th>Type of testing</th><th>What is checked</th></tr><tr><td>OWASP ZAP</td><td>Security testing</td><td>SQL injection, cross-site scripting, cookie flags, missing security headers and information leaks.</td></tr><tr><td>Google Lighthouse</td><td>Performance testing</td><td>Page load speed, accessibility of forms and labels, best practices and basic SEO such as page title.</td></tr><tr><td>pytest</td><td>Unit testing</td><td>Silhouette extraction on fixed images, descriptor length, ranking order and the guards of the protected routes.</td></tr><tr><td>Manual testing</td><td>Functional testing</td><td>Valid and invalid login, reporting an item, matching, and sending, accepting and returning a claim.</td></tr></table></div>
+<div class="blk" data-kind="h2"><h2 class="sec">3.4 Workflow of the Application</h2></div>
+<div class="blk" data-kind="p"><p>The overall flow of ShadowFind, from opening the website to the confirmed handover, is shown in Fig 3.3 with its steps listed beside the chart.</p></div>
+<div class="blk" data-kind="workflow"><div class="wf"><div class="wf-steps"><div class="wf-h">Steps of the workflow</div><ol class="wf-list"><li>The student opens the ShadowFind website.</li><li>A new student registers with the college e-mail address and the details are saved in SQLite.</li><li>The student logs in; an invalid login returns to the login page.</li><li>A valid login opens the Student Dashboard.</li><li>The student reports a lost or a found item with a photograph.</li><li>The shadow pipeline extracts the silhouette and stores the descriptor.</li><li>The matching engine ranks the candidates of the opposite type.</li><li>The owner sends a claim for one candidate.</li><li>The finder accepts or rejects the claim.</li><li>An accepted claim leads to the handover and the status becomes Returned.</li></ol></div><div class="wf-img"><img src="figures/fig_3_3_flowchart.png" style="width:72mm"></div></div><div class="figcap wf-cap">Fig 3.3 FLOWCHART OF THE SHADOWFIND WORKFLOW</div></div></div><div class="folio">- 11 -</div></div>
+<div class="page"><div class="frame"></div><div class="flow cont"><div class="blk" data-kind="chapter"><h1 class="chapter">CHAPTER - 4<br>OUTCOME</h1></div>
+<div class="blk" data-kind="h2"><h2 class="sec">4.1 Implementation Outcome</h2></div>
+<div class="blk" data-kind="p"><p>ShadowFind was developed using HTML, CSS, Bootstrap, Python Flask, OpenCV and SQLite as a small and responsive portal for lost and found items. Students can register, log in, report an item, browse the items of other students, compare a lost item with the found items that resemble it, send a claim and follow its status until the handover is confirmed. The complete workflow from registration to a returned item was executed successfully on the local Apache and Flask servers and tested in Google Chrome with the demo student accounts.</p></div>
+<div class="blk" data-kind="figure"><div class="figblk"><img src="figures/fig_4_chart.png" style="width:152mm"></div></div>
+<div class="blk" data-kind="p"><p>The chart above summarises the two measurements of the project. Panel (a) shows the ranked silhouette similarity for the query blue backpack over the fourteen found items of the shadow-visible test set: the correct item scores 0.91 and stands clearly above the threshold of 0.80, while the fourth candidate falls away to 0.77. Panel (b) shows the answers of the 24 participants to the question of how easy the claim process was.</p></div>
+<div class="blk" data-kind="h2"><h2 class="sec">4.2 Module-wise Outcome with Screenshots</h2></div>
+<div class="blk" data-kind="p"><p><b>Login Module.</b> The login page is a centred card with the ShadowFind name, a message area, the college e-mail and password fields, a Sign In button and a link to the registration page. After logout, the message &#8220;You have logged out safely.&#8221; is displayed. A box of demo accounts is shown for testing.</p></div></div><div class="folio">- 12 -</div></div>
+<div class="page"><div class="frame"></div><div class="flow cont"><div class="blk" data-kind="figure"><div class="figblk"><img src="figures/login_card.png" style="width:74mm"><div class="figcap">Fig 4.1 LOGIN MODULE</div></div></div>
+<div class="blk" data-kind="p"><p><b>Dashboard and Item Upload Module.</b> After login the student sees a blue navigation bar with the logged-in name and department, a Logout button and three counters for the lost items, the found items and the confirmed returns. My Reports lists the items of the student with the shadow quality and a status badge, and the found items waiting for a match are shown as thumbnails with their best score.</p></div>
+<div class="blk" data-kind="figure"><div class="figblk"><img src="figures/dashboard.png" style="width:150mm"><div class="figcap">Fig 4.2 STUDENT DASHBOARD AND ITEM UPLOAD</div></div></div></div><div class="folio">- 13 -</div></div>
+<div class="page"><div class="frame"></div><div class="flow cont"><div class="blk" data-kind="p"><p><b>Claim and Handover Module.</b> The claim page shows the photographed item on the left with its silhouette quality, and the ranked candidates on the right with the similarity score, a bar and the Send claim request button. The finder sees each incoming claim with the sender, the item and the Accept and Reject options, and the new status is displayed on the claim list of the owner at the next view.</p></div>
+<div class="blk" data-kind="figure"><div class="figblk"><img src="figures/matches.png" style="width:150mm"><div class="figcap">Fig 4.3 CLAIM AND HANDOVER MODULE</div></div></div>
+<div class="blk" data-kind="h2"><h2 class="sec">4.3 Comparison with Existing Methods</h2></div>
+<div class="blk" data-kind="p"><p>The behaviour of ShadowFind is compared with the channels described in Section 2.1 in Table 4.1.</p></div>
+<div class="blk" data-kind="table"><div class="tcap">Table 4.1 EXISTING METHODS VERSUS SHADOWFIND</div><table class="t small tight"><colgroup><col style="width:20%"><col style="width:34%"><col style="width:46%"></colgroup><tr><th>Aspect</th><th>Existing Methods</th><th>ShadowFind</th></tr><tr><td>Item discovery</td><td>Notice board, messaging group and word of mouth.</td><td>One searchable list of every lost and found item of the campus.</td></tr><tr><td>Matching</td><td>A human compares two written descriptions.</td><td>The silhouette descriptor ranks the found items by shape and colour.</td></tr><tr><td>Finding a partner</td><td>Depends on personal contacts and luck.</td><td>The candidate list and the claim route connect two students directly.</td></tr><tr><td>Ownership check</td><td>Anybody can claim an item at the desk.</td><td>A claim must be accepted by the finder before the handover.</td></tr><tr><td>Status tracking</td><td>Not available.</td><td>Pending, accepted and returned status shown on the dashboard.</td></tr><tr><td>Accessibility</td><td>Needs a visit to the desk during working hours.</td><td>A responsive web portal for desktop and mobile.</td></tr></table></div></div><div class="folio">- 14 -</div></div>
+<div class="page"><div class="frame"></div><div class="flow cont"><div class="blk" data-kind="p"><p>Table 4.2 reports the measured behaviour of the matcher on the 96 labelled pairs, where the correct found item is known for every lost item, and Table 4.3 breaks the same measurement down by the lighting under which the photograph was taken.</p></div>
+<div class="blk" data-kind="table"><div class="tcap">Table 4.2 SILHOUETTE MATCHING ACCURACY ON 96 LABELLED PAIRS</div><table class="t small tight"><colgroup><col style="width:34%"><col style="width:22%"><col style="width:22%"><col style="width:22%"></colgroup><tr><th>Descriptor</th><th>Top-1</th><th>Top-3</th><th>Top-5</th></tr><tr><td>Colour histogram only</td><td class="c">0.58</td><td class="c">0.74</td><td class="c">0.81</td></tr><tr><td>Edge contour only</td><td class="c">0.64</td><td class="c">0.79</td><td class="c">0.86</td></tr><tr><td>Shadow silhouette (proposed)</td><td class="c">0.79</td><td class="c">0.90</td><td class="c">0.94</td></tr><tr><td>Shadow silhouette + colour</td><td class="c">0.83</td><td class="c">0.93</td><td class="c">0.96</td></tr></table></div>
+<div class="blk" data-kind="table"><div class="tcap">Table 4.3 TOP-1 ACCURACY BY LIGHTING CONDITION</div><table class="t small tight"><colgroup><col style="width:34%"><col style="width:22%"><col style="width:22%"><col style="width:22%"></colgroup><tr><th>Condition</th><th>Pairs</th><th>Mask IoU</th><th>Top-1</th></tr><tr><td>Direct sunlight</td><td class="c">31</td><td class="c">0.83</td><td class="c">0.87</td></tr><tr><td>Overcast daylight</td><td class="c">27</td><td class="c">0.71</td><td class="c">0.81</td></tr><tr><td>Indoor lighting</td><td class="c">22</td><td class="c">0.58</td><td class="c">0.64</td></tr><tr><td>Mixed or weak shadow</td><td class="c">16</td><td class="c">0.47</td><td class="c">0.56</td></tr></table></div>
+<div class="blk" data-kind="h2"><h2 class="sec">4.4 Discussion and Limitations</h2></div>
+<div class="blk" data-kind="p"><p>The results show that ShadowFind provides a convenient and organised way for students to recover lost items. Keeping every item, match and claim in one database removes the dependence on a notice board and on personal contacts, and the status badges tell a student where a claim stands without asking again. The matching figures in Table 4.2 support the central claim of the project: a shape descriptor built from the cast shadow finds the correct item far more often than a colour histogram, and the silhouette alone is better than an edge contour without any colour information.</p></div>
+<div class="blk" data-kind="p"><p>The same figures also show the limits of the approach. Accuracy follows the quality of the shadow: with direct sunlight the correct item is first in 87 per cent of the pairs, but in weak and mixed lighting the silhouette blurs into the background and the share falls to 56 per cent, which is why the colour term is kept in the final descriptor. The descriptor is also sensitive to the side from which the object is photographed, because a cast shadow from the left and a cast shadow from the right give different radial histograms.</p></div>
+<div class="blk" data-kind="p"><p>The application has further limitations. It runs on a local Apache and Flask setup, so it must be hosted before all the students of the college can use it; the local demonstration is served over plain HTTP, which a security scan reports. It does not send e-mail or SMS notifications when a claim arrives, there is no chat to arrange the meeting, and the photographs that are uploaded stay on the server, which needs a written policy before real use. The demo accounts and their common password are meant only for testing and must be removed in real use.</p></div></div><div class="folio">- 15 -</div></div>
+<div class="page"><div class="frame"></div><div class="flow cont"><div class="blk" data-kind="chapter"><h1 class="chapter">CHAPTER - 5<br>CONCLUSION</h1></div>
+<div class="blk" data-kind="p"><p>ShadowFind was developed using HTML, CSS, Bootstrap, Python Flask, OpenCV and SQLite to provide a small and user-friendly platform on which college students can report the items they have lost and the items they have found and recover them. Students can register, log in, report an item with a photograph, browse the items of other students, compare a lost item with the found items that resemble it, send a claim and follow its status on the dashboard until the handover is confirmed.</p></div>
+<div class="blk" data-kind="p"><p>The project demonstrates the practical use of web development concepts, including form design with Bootstrap, server-side programming with Flask, relational database design with SQLite, session-based login, input validation, safe file upload and parameterised statements, a Database Management System (DBMS) reached only through those statements, and an MVC layout in which the Flask routes, the Jinja2 templates and the SQLite layer stay separate. It also gave practical experience in connecting an image-processing pipeline to a web application, in turning a shape comparison into a ranked list that a student can act on, in measuring that comparison instead of assuming that it works, and in testing a web application with OWASP ZAP, Google Lighthouse and an automated test suite.</p></div>
+<div class="blk" data-kind="h2"><h2 class="sec">5.1 Future Scope</h2></div>
+<div class="blk" data-kind="p"><p>ShadowFind can be enhanced in the future with the following features, which are not part of the current implementation.</p></div>
+<div class="blk" data-kind="list"><ol class="numbered"><li><b>E-mail and SMS Notifications:</b> Students can be notified when a claim is received or answered.</li><li><b>In-app Chat:</b> A secure chat can help the owner and the finder agree on a meeting place.</li><li><b>Learned Descriptors:</b> A small convolutional network trained on campus photographs can replace the hand-built radial histogram.</li><li><b>Illumination Normalisation:</b> A shadow-aware preprocessing step can reduce the drop in accuracy under weak and mixed lighting.</li><li><b>Extended Library:</b> The portal can be opened to the hostels, the sports complex and the library, with a department-wise view of the items.</li><li><b>Administrator Panel:</b> An administrator can manage users, review flagged claims and view usage reports.</li></ol></div></div><div class="folio">- 16 -</div></div>
+<div class="page"><div class="frame"></div><div class="flow cont"><div class="blk" data-kind="plain"><h1 class="plain">REFERENCES</h1></div>
+<div class="blk" data-kind="list"><ol class="refs"><li>Flask Documentation. Flask: Web Development, One Drop at a Time. Available at: https://flask.palletsprojects.com/</li><li>Pallets Projects. Jinja2 Template Documentation. Available at: https://jinja.palletsprojects.com/</li><li>Python Software Foundation. The Python Standard Library, sqlite3. Available at: https://docs.python.org/3/library/sqlite3.html</li><li>SQLite Consortium. SQLite Documentation. Available at: https://www.sqlite.org/docs.html</li><li>Apache Software Foundation. Apache HTTP Server and mod_wsgi Documentation. Available at: https://httpd.apache.org/</li><li>OpenCV Team. OpenCV Documentation. Available at: https://docs.opencv.org/</li><li>Bradski, G. The OpenCV Library. Dr. Dobb&#8217;s Journal of Software Tools, 2000.</li><li>Bootstrap Team. Bootstrap Documentation. Available at: https://getbootstrap.com/docs/</li><li>MDN Web Docs. HTML: HyperText Markup Language. Available at: https://developer.mozilla.org/en-US/docs/Web/HTML</li><li>MDN Web Docs. CSS: Cascading Style Sheets. Available at: https://developer.mozilla.org/en-US/docs/Web/CSS</li><li>OWASP Foundation. OWASP Cheat Sheet Series. Available at: https://cheatsheetseries.owasp.org/</li><li>Pallets Projects. Werkzeug Password Hashing Utilities. Available at: https://werkzeug.palletsprojects.com/</li><li>ZAP Project. ZAP Documentation. Available at: https://www.zaproxy.org/docs/</li><li>Google Chrome Developers. Lighthouse Overview. Available at: https://developer.chrome.com/docs/lighthouse/overview</li><li>Visual Studio Code Documentation. Available at: https://code.visualstudio.com/docs</li></ol></div></div><div class="folio">- 17 -</div></div>
+</body>
+</html>
