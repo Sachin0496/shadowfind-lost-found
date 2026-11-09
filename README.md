@@ -8,6 +8,23 @@ Photograph a lost or found item once. ShadowFind isolates the item's cast shadow
 
 ---
 
+## Live demo
+
+### ▶ https://sachin0496.github.io/shadowfind-lost-found/
+
+The site runs the whole app in your browser: OpenCV.js does the shadow extraction
+and `localStorage` holds the accounts and reports. Log in with
+`ananya@college.edu` / `shadow123` (or any account listed on the login page) and
+try reporting an item with your own photo.
+
+GitHub Pages can only serve static files, so this is a JavaScript port of the
+same pipeline (`docs/assets/vision.js`), not the Flask app. Both builds produce
+the identical 64-value descriptor, which is why the seeded rankings match.
+
+![Browse items](docs/screenshot-browse.png)
+
+---
+
 ## Quick start
 
 ```bash
