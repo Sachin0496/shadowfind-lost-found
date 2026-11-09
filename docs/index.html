@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ShadowFind - lost and found, matched by shadow</title>
+<meta name="description" content="Campus lost and found where items are matched by the shape of their cast shadow. Runs entirely in your browser.">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='42' r='26' fill='%231F3A6E'/><ellipse cx='50' cy='78' rx='34' ry='9' fill='%237fa8cc'/></svg>">
+</head>
+<body>
+<nav class="nav">
+  <a class="brand" href="#/">
+    <svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="9" r="6" fill="#fff"/><ellipse cx="12" cy="19" rx="9" ry="2.6" fill="#7fa8cc"/></svg>
+    ShadowFind
+  </a>
+  <div class="nav-links" id="navlinks"></div>
+  <div class="nav-right" id="navright"></div>
+</nav>
+
+<div class="wrap">
+  <div id="flash"></div>
+  <main id="app"></main>
+  <div class="footer">
+    ShadowFind &middot; campus lost &amp; found matched by shadow silhouette
+    &middot; <a href="ShadowFind_Report.pdf">project report</a>
+    <div class="engine-note" id="engine"></div>
+  </div>
+</div>
+
+<script type="module" src="assets/app.js"></script>
+</body>
+</html>
